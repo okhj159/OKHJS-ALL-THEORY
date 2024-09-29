@@ -1,0 +1,130 @@
+@startuml
+'https://plantuml.com/class-diagram
+'sample code.
+'todo: 예제 작성 후 png export
+
+title Generalization
+
+'extends
+
+class Animal {
+    sound: string
+    getSound(): string
+}
+
+class Dog {
+    getSound(): string
+    bark(): void
+}
+
+class Cat {
+    getSound(): string
+    meow(): void
+}
+
+Animal<|-- Dog
+Animal <|-- Cat
+
+@enduml
+
+@startuml
+
+title Realization
+
+'implements
+
+interface Delivery {
+}
+
+class Return {
+    getDeliveryPolicy()
+    getDeliveryFee()
+}
+
+Delivery <|.. Return
+
+@enduml
+
+
+@startuml
+
+title Dependency
+
+'함수의 parameter, return, method 변수로 사용하는 경우
+
+class User {
+    getAuthentification(): Authorization
+}
+
+class Authorization {
+    role: Role
+    authorized: boolean
+}
+
+User ..> Authorization
+
+@enduml
+
+@startuml
+
+title Association
+
+'매개변수로 쓰이지만 A 인스턴스가 생성될 때 필수적인 요소가 아닌 경우
+
+class User {
+    addresses: List<Address>
+}
+
+class Address {
+    address1: String
+    address2: String
+    zipcode: String
+}
+
+User --> Address
+
+@enduml
+
+@startuml
+
+title Aggregation
+
+'라이프타임 독립적.
+
+class Car {
+}
+
+class Engine {
+}
+
+class Wheel {
+}
+
+Car o-- Engine
+Car o-- Wheel
+
+@enduml
+
+@startuml
+
+title composition
+
+'라이프타임 의존적. new 생성자 사용하는 경우
+
+class Ant {
+}
+
+class Head {
+}
+
+class Body {
+}
+
+class Leg {
+}
+
+Ant *--> Head
+Ant *--> Body
+Ant *--> Leg
+
+@enduml

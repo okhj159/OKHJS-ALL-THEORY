@@ -998,7 +998,11 @@
 <hr />
 
 ### Mobile Applications
-#### React Native
+
+#### hybrid app
+- 네이티브 앱과 웹 앱의 장점을 결합한 앱
+
+##### React Native
 - Guides
     - The Basics
         - Core Components and Native Components
@@ -1311,8 +1315,11 @@
                 - useRoute는 useNavigation과 비슷하게, Screen이 아닌 컴포넌트에서 route 객체를 사용할 수 있게 한다.
             - useFocusEffect
                 - 화면에 포커스가 잡혔을 때 특정 작업을 할 수 있게 하는 Hook이다.
+                
+#### native app
+- 앱 개발 시 네이티브 코드를 사용하여 앱을 개발하는 방식
 
-#### Swift
+##### Swift
 - 애플의 iOS, macOS 드 자사의 제품 개발에 활용하는 프로그래밍 언어
 - 언어적 특성
     - 안정성 : 엄격한 문법
@@ -1323,6 +1330,15 @@
       `var [변수명]: [데이터 타입] = [값]` 형태로 선언하며, 데이터 타입은 생략 가능
     - let : 상수 키워드
       `let [상수명]: [데이터 타입] = [값]`
+
+##### Kotlin
+- 안드로이드 앱 개발을 위한 언어
+- 자바와 완전히 호환되는 언어
+- 안드로이드 공식 언어
+- 안드로이드 스튜디오에서 자바 대신 사용할 수 있다.
+
+#### web app
+- 웹 브라우저를 통해 앱을 사용하는 방식
 
 <hr />
 

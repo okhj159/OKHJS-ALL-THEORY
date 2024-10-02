@@ -328,15 +328,158 @@
 #### React
 - Learn
 - Reference
-    - directives (지시어)
-        - `use client`
-            - 클라이언트에서 실행되는 코드를 표시
-            - 명시된 컴포넌트에 국한되지 않고 하위 계층까지 클라이언트 번들로 간주된다.
-        - `use server`
-            - 클라이언트 사이드에서 호출할 수 있는 서버 사이드 함수임을 표시
-    - Rules of Hooks (hook의 규칙)
-      - 최상위(at the top of level)에서만 hook을 호출해야 한다.
-      - 이 규칙으로 컴포넌트가 렌더링 될 때마다 동일한 순서로 hook이 호출되는 것을 보장한다.
+    - 개요
+        - React
+            - React의 프로그래밍 기능
+                - Hooks
+                - Components
+                - APIs
+                - Directives
+        - React DOM
+            - React DOM은 브라우저 DOM 환경에서 실행되는 웹 애플리케이션에서만 지원되는 기능을 포함하고 있다.
+                - Hooks
+                - Components
+                - APIs
+                - Clients APIs
+                - Server APIs
+        - React의 규칙
+            - 컴포넌트와 Hook은 순수해야 한다.
+                - 순수성은 코드를 더 쉽게 이해하고 디버그할 수 있도록 하며, React가 올바르게 컴포넌트와 Hook을 자동으로 최적화할 수 있도록 한다.
+            - React가 컴포넌트와 Hook을 호출하는 방식
+                - React는 사용자 경험을 최적화하기 위해 필요할 때마다 컴포넌트와 Hook을 렌더링 한다.
+            - Hook의 규칙
+                - Hook은 JavaScript 함수로 정의되지만 호출 위치에 제약이 있는 특별한 유형의 재사용 가능한 UI 로직이다.
+    - React
+        - Hools
+            - State Hooks
+                - State를 통해 컴포넌트는 사용자 입력과 같은 정보를 기억할 수 있다. 예를 들어, 폼 컴포넌트는 state를 사용하여 입력값을 저장할 수 있고, 이미지
+                  갤러리 컴포넌트는 state를 사용하여 선택한 이미지 인덱스를 저장할 수 있다.
+                - 컴포넌트에 state를 추가하려면, 다음 Hook 중 하나를 사용하면 된다.
+                    - useState는 직접 업데이트할 수 있는 state 변수를 선언한다.
+                    - useReducer는 reducer 함수 내부의 업데이트 로직을 사용하여 state 변수를 선언한다.
+            - Context Hooks
+                - Context를 사용하면 컴포넌트가 멀리 있는 부모 컴포넌트로부터 props로 전달하지 않으면서 정보를 받을 수 있다. 예를 들어, 애플리케이션의 최상위 컴포넌트는
+                  현재 UI 테마를 아래의 모든 컴포넌트에 깊이와 상관없이 전달할 수 있다.
+                    - useState는 context를 읽고 구독한다.
+            - Ref Hooks
+                - Ref를 사용하면 컴포넌트가 DOM 노드나 timeout ID와 같이 렌더링에 사용되지 않는 일부 정보를 보유할 수 있다. state와 달리, ref를 업데이트해도
+                  컴포넌트가 다시 렌더링 되지 않는다. Ref는 React 패러다임의 탈출구이다. 내장된 브라우저 API와 같이, React가 아닌 시스템으로 작업해야 할 때 유용하다.
+                    - useRef는 ref를 선언한다. 여기에는 어떤 값이라도 담을 수 있지만, 대부분 DOM 노드를 담는 데 사용된다.
+                    - useImperativeHandle을 사용하면 컴포넌트에 노출되는 ref를 커스텀할 수 있다. 이는 드물게 사용된다.
+            - Effect Hooks
+                - Effects를 통해 컴포넌트를 외부 시스템에 연결하고 동기화할 수 있다. 여기에는 네트워크, 브라우저 DOM, 애니메이션, 다른 UI 라이브러리를 사용하여 작성된
+                  위젯, 기타 React가 아닌 코드를 다루는 것이 포함된다.
+                    - useEffect는 컴포넌트를 외부 시스템에 연결한다.
+                - Effects는 React 패러다임의 탈출구이다. 애플리케이션의 데이터 흐름을 조정하기 위해 Effect를 쓰지 마시길. 외부 시스템과 상호 작용하지 않는다면, Effect가
+                  필요하지 않을 수도 있다.
+                - useEffect에는 타이밍 차이가 있지만 거의 사용되지 않는 두 가지 변형이 있다.
+                    - useLayoutEffect는 브라우저가 화면을 다시 그리기 전에 실행된다. 여기에서 레이아웃을 계산할 수 있다.
+                    - useInsertionEffect는 React가 DOM을 변경하기 전에 실행된다. 라이브러리는 여기에 동적 CSS를 삽입할 수 있다. 
+            - Performance Hooks
+                - 재렌더링 성능을 최적화하는 일반적인 방법은 불필요한 작업을 건너뛰는 것이다. 예를 들어, 이전 렌더링 이후 데이터가 변경되지 않은 경우 캐시된 계산을 재사용하거나
+                  재렌더링을 건너뛰도록 React에 지시할 수 있다.
+                      - useMemo를 사용하면 비용이 많이 드는 계산 결과를 캐시할 수 있다.
+                      - useCallback을 사용하면 함수 정의를 최적화된 컴포넌트에 전달하기 전에 캐시할 수 있다.
+                - 화면을 실제로 업데이트해야 하므로 재렌더링을 건너뛸 수 없는 경우도 있다. 이 경우, 동기식이어야 하는 blocking 업데이트(예: input에 입력)와 사용자
+                  인터페이스를 차단할 필요가 없는 non-blocking 업데이트(예: 차트 업데이트)를 분리하여 성능을 향상시킬 수 있다.
+                - 렌더링 우선순위를 지정하려면, 다음 Hook 중 하나를 사용하면 된다.
+                    - useTransition을 사용하면 state 전환을 non-blocking으로 표시하고, 다른 업데이트가 이를 중단하도록 허용할 수 있다.
+                    - useDefferredValue를 사용하면 UI의 중요하지 않은 부분에 대한 업데이트를 연기하고, 다른 부분이 먼저 업데이트되도록 할 수 있다.
+            - Other Hooks
+                - 다음 Hook은 대부분 라이브러리 작성자에게 유용하며 애플리케이션 코드에서는 일반적으로 사용되지 않는다.
+                    - useDebugValue를 사용하면 커스텀 Hook에 대해 React DevTools에 표시해 주는 레이블을 커스텀할 수 있다.
+                    - useId를 사용하면 컴포넌트가 고유 ID를 자신과 연결할 수 있다. 일반적으로 접근성 API와 함께 사용된다.
+                    - useSyncExternalStore를 사용하면 컴포넌트가 외부 저장소를 구독할 수 있다.
+                    - useActionState를 사용하면 액션을 통해 상태를 관리할 수 있다.
+            - Custom Hooks
+                - 나만의 custom hook을 정의할 수도 있다.
+        - 컴포넌트
+            - 내장 컴포넌트
+                - <Fragment>, 또는 <>...</>로 표기하며, 여러 JSX 노드를 함께 그룹화할 수 있다.
+                - <Profiler> React 트리의 렌더링 성능을 프로그래밍적으로 측정할 수 있다.
+                - <Suspense> 자식 컴포넌트를 로딩하는 동안 fallback을 표시할 수 있다.
+                - <StrictMode> 초기에 버그를 찾는 데 도움이 되는 추가 개발 전용 검사를 사용할 수 있다.
+            - Custom 컴포넌트
+                - 나만의 custom component를 정의할 수도 있다.
+            - <Suspense>
+                - <Suspense>는 자식 요소가 로드되기 전까지 화면에 대체 UI를 보여준다.
+                - 레퍼런스
+                    - props
+                        - children: 궁극적으로 렌더링하려는 실제 UI이다. children의 렌더링이 지연되면, Suspense는 fallback을 대신 렌더링한다.
+                        - fallback: 실제 UI가 로드되기 전까지 대신 렌더링 되는 대체 UI이다. 올바른 React node 형식은 무엇이든 대체 UI로 활용할 수 있지만, 실제로는
+                          보통 로딩 스피너나 스켈레톤처럼 간단한 placeholder를 활용한다. Suspense는 children의 렌더링이 지연되면 자동으로 fallback으로 전환하고,
+                          데이터가 준비되면 children으로 다시 전환한다. 만약 fallback의 렌더링이 지연되면, 가장 가까운 부모 Suspense가 활성화된다.
+                    - 주의사항
+                        - React는 컴포넌트가 처음으로 마운트 되기 전에 지연된 렌더링을 하는 동안의 어떤 state도 유지되지 않는다. 컴포넌트가 로드되면 React는
+                          일시 중지된 트리를 처음부터 다시 렌더링한다.
+                        - Suspense가 트리의 콘텐츠를 보여주고 있을 때 또다시 지연되면 startTransition나 useDeferredValue로 인한 업데이트가 아닌 한, fallback이
+                          다시 보인다.
+                        - React가 다시 일시 중지되어 보이는 콘텐츠를 숨겨야 하는 경우, 콘텐츠 트리에서 layout Effect들을 정리한다. 콘텐츠가 다시 보일 준비가 되면
+                          React는 layout Effect들을 다시 실행한다. 이로써 DOM 레이아웃을 측정하는 Effect가 콘텐츠가 숨겨져 있는 동안 동작하지 않도록 보장한다.
+                        - React는 Supense와 통합된 Streaming Server Rendering와 Selective Hydration같은 내부 최적화를 포함하고 있다.
+                - 사용법
+                    - 콘텐츠가 로드되는 동안 대체 UI 보여주기
+                        - 애플리케이션의 모든 곳을 Suspense 경계로 감쌀 수 있다.
+                          ```
+                            <Suspense fallback={<Loading />}>
+                              <Albums />
+                            </Suspense>
+                          ```
+                        - React는 children에 필요한 모든 코드와 데이터가 로드될 때까지 loading fallback을 보여준다.
+                        - 중요
+                          ```
+                            Suspense가 가능한 데이터만이 Suspense 컴포넌트를 활성화한다. 아래와 같은 것들이 해당된다.
+                            - Relay와 Next.js같이 Suspense가 가능한 프레임워크를 사용한 데이터 가져오기
+                            - lazy를 활용한 지연 로딩 컴포넌트
+                            - use를 사용해서 Promise 값 읽기
+                            Suspense는 Effect 또는 이벤트 핸들러 내부에서 가져우는 데이터를 감지하지 않는다.
+                          ```
+                    - 콘텐츠를 한꺼번에 함께 보여주기
+                        - 기본적으로 Suspense 내부의 전체 트리는 하나의 단위로 취급된다. 예를 들어, 이러한 구성 요소 중 하나라도 어떤 데이터에 의해 지연되더라도 모든
+                          구성 요소가 함께 로딩 표시로 대체된다.
+                          ```
+                            <Suspense fallback={<Loading />}>
+                              <Biography />
+                              <Panel>
+                                <Albums />
+                              </Panel>
+                            </Suspense>
+                          ```
+                        - 그런 다음 모두 보일 준비가 되면 한꺼번에 모두 함께 보인다.
+                    - 중첩된 콘텐츠가 로드될 때 보여주기
+                        - 컴포넌트가 일시 중단되면 가장 가까운 상위 Suspense 컴포넌트가 Fallback을 보여준다. 이를 통해 여러 Suspense 컴포넌트를 중첩하여 로딩 순서를
+                          만들 수 있다. 각 Suspense의 Fallback은 다음 레벨의 콘텐츠를 사용할 수 있게 되면 채워진다. 예를 들어 앨범 목록에 자체 Fallback을 지정할 수 있다.
+                          ```
+                            <Suspense fallback={<BigSpinner />}>
+                              <Biography />
+                              <Suspense fallback={<AlbumsGlimmer />}>
+                                <Panel>
+                                  <Albums />
+                                </Panel>
+                              </Suspense>
+                            </Suspense>
+                          ```
+                        - 이 변경으로 Biography를 보여줄 때 Albums이 로드될 떄까지 기다릴 필요가 없다.
+                        - 순서는 다음과 같다.
+                          1. Biography가 아직 로드되지 않은 경우, 전체 콘텐츠 영역 대신 BigSpinner가 표시된다.
+                          2. Biography 로딩이 완료되면 BigSpinner가 콘텐츠로 대체된다.
+                          3. Albums가 아직 로드되지 않으면 Albums와 그 상위 Panel 대신 AlbumsGlimmer가 표시된다.
+                          4. 마지막으로 Albums가 로딩을 완료하면 AlbumsGlimmer를 대체한다.
+                        - Suspense를 사용하면 UI의 어떤 부분이 항상 동시에 그려져야 하는지, 어떤 부분이 로딩 순서에서 점진적으로 더 많은 콘텐츠를 보여줘야 하는지
+                          조정할 수 있다. 앱의 나머지 동작에 영향을 주지 않고 트리의 어느 위치에서나 Suspense를 추가, 이동 또는 삭제할 수 있다.
+                        - 모든 컴포넌트 주위에 Suspense를 두면 안된다. Suspense는 사용자가 경험하기를 원하는 로딩 순서보다 더 세분화되어서는 안된다.
+                          디자이너와 함께 작업하는 경우 로딩 상태를 어디에 배치해야 하는지 디자이너에게 물어보면 된다. 디자이너가 이미 디자인 와이어 프레임에
+                          포함했을 가능성이 높다.
+                          
+        - API
+    - React DOM
+        - Hools
+        - 컴포넌트
+        - API
+        - 클라이언트 API
+        - 서버 API
+    - React의 규칙
+    - React 서버 컴포넌트
 - 기타
     - 네이밍 규칙
         - 컴포넌트가 단일 파일로 구성되는 경우 파일 이름은 대문자로 시작해야 한다.
@@ -912,6 +1055,7 @@
 <hr />
 
 ### Server Side Rendering
+
 #### Next.js
 - App Router 버전
     - Getting Started
@@ -1343,6 +1487,7 @@
 <hr />
 
 ### Bonus Content
+
 #### Storybook
 - Guides
     - Get started
@@ -1364,9 +1509,14 @@
     - 프로젝트 간의 버전을 관리하기 쉽다.
     - 프로젝트 간의 빌드와 테스트를 쉽게 할 수 있다.
     - 프로젝트 간의 배포를 쉽게 할 수 있다.
+    
 ##### TurboRepo
 - Introduction
     - What is TurboRepo?
         - JavaScript 및 TypeScript 코드베이스를 위한 고성능 빌드 시스템. 모노레포를 확장하도록 설계되었으며 단일 패키지 작업 공간 에서 워크플로도 더 빠르게 만든다.
+- 기타
+    - 빌드 시스템
+    - 모노레포를 확장하도록 설계되었으며 단일 패키지 작업 공간 에서 워크플로도 더 빠르게 만든다.
+
 
 <hr />

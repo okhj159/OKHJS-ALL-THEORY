@@ -687,7 +687,7 @@
                     - Data Loading
                     - Redirects
                     - Pending Navigation UI
-                    - Skeleton UI with <Suspense>
+                    - Skeleton UI with `<Suspense>`
                     - Data Mutation
                     - Data Revalidation
                     - Busy Indicators
@@ -1459,7 +1459,104 @@
                 - useRoute는 useNavigation과 비슷하게, Screen이 아닌 컴포넌트에서 route 객체를 사용할 수 있게 한다.
             - useFocusEffect
                 - 화면에 포커스가 잡혔을 때 특정 작업을 할 수 있게 하는 Hook이다.
-                
+
+##### React Native Library
+
+###### React Navagation
+- Fundamentals
+    - Hello React Navagation
+        - 웹 브라우저에서 앵커(`<a>`) 태그를 사용하여 다른 페이지에 링크할 수 있다. 사용자가 링크를 클릭하면 URL이 브라우저 기록 스택에 푸시된다. 사용자가 뒤로 가기 버튼을
+          누르면 브라우저가 기록 스택 맨 위에서 항목을 팝 하므로 활성 페이지는 이제 이전에 방문한 페이지가 된다. React Native에서 웹 브라우저와 같은 글로벌 기록 스택에 대한
+          기본 제공 아이디어가 없다. 여기서 React Navigation이 스토리에 등장한다.
+        - React Navigation의 네이티브 스택 네비게이터는 앱이 화면 간에 전환하고 탐색 기록을 관리할 수 있는 방법을 제공한다. 앱에서 스택 네비게이터를 하나만 사용하는 경우
+          웹 브라우저가 탐색 상태를 처리하는 방식과 개념적으로 비슷하다. 즉, 앱은 사용자가 탐색 스택과 상호 작용할 때 탐색 스택에서 항목을 푸시하고 팝하며, 그 결과 사용자는
+          다른 화면을 보게 된다. 이것이 웹 브라우저와 React Navigation에서 작동하는 방식의 주요 차이점은 React Navagation의 네이티브 스택 네비게이터가 스택의 경로 간에
+          탐색할 때 Android와 iOS에서 기대하는 제스처와 애니메이션을 제공한다는 것이다.
+        - 가장 일반적인 네비게이터인 createNativeStackNavigator부터 설명하도록 하겠다.
+        - Creating a native stack navigator 
+            - createNativeStackNavigator는 2가지 속성(Screen과 Navigator)를 포함하는 객체를 반환하는 함수이다. 둘 다 네비게이터 구성요소에 사용되는 React
+              component이다. Navigator는 경로 구성을 정의하기 위해 Screen 원소를 하위 요소로 반드시 포함해야 한다.
+            - NavigationContainer는 navigation tree를 관리하고 navigation state를 포함하는 component이다. 이 컴포넌트는 모든 navigator 구조를 감싸야만 한다.
+              일반적으로 App.js에서 내보낸 컴포넌트인 앱의 최상단에 이 컴포넌트를 렌더링한다.
+            - 
+              ```
+                // In App.js in a new project
+
+                import * as React from 'react';
+                import { View, Text } from 'react-native';
+                import { NavigationContainer } from '@react-navigation/native';
+                import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+                function HomeScreen() {
+                  return (
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text>Home Screen</Text>
+                    </View>
+                  );
+                }
+
+                const Stack = createNativeStackNavigator();
+
+                function App() {
+                  return (
+                    <NavigationContainer>
+                      <Stack.Navigator>
+                        <Stack.Screen name="Home" component={HomeScreen} />
+                      </Stack.Navigator>
+                    </NavigationContainer>
+                  );
+                }
+
+                export default App;
+              
+              ```
+        - Configuring the navigator
+            - 모든 경로 구성은 navigator의 props로 지정된다. 
+            - native stack navigator에 2번째 screen을 추가하고, Home screen을 처음에 렌더링하도록 구성해보자.
+              ```
+                function DetailsScreen() {
+                  return (
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text>Details Screen</Text>
+                    </View>
+                  );
+                }
+
+                const Stack = createNativeStackNavigator();
+
+                function App() {
+                  return (
+                    <NavigationContainer>
+                      <Stack.Navigator initialRouteName="Home">
+                        <Stack.Screen name="Home" component={HomeScreen} />
+                        <Stack.Screen name="Details" component={DetailsScreen} />
+                      </Stack.Navigator>
+                    </NavigationContainer>
+                  );
+                }
+              ```
+            - 이제, stack에는 Home과 Details 2가지 경로를 가지게 되었다. 경로는 Screen 컴포넌트를 사용함으로써 지정되어진다. Screen 컴포넌트는 탐색에 사용될 경로의 이름에
+              해당하는 name props와 렌더링될 컴포넌트에 해당하는 component props를 가진다.
+            - Home 경로에 해당하는 HomeScreen 컴포넌트와 Details 경로에 해당하는 DetailsScreen 컴포넌트가 있다. stack의 초기 경로는 Home 경로이다. 
+            - 주의
+              ```
+                component props는 컴포넌트를 받지 렌더링 함수를 받지는 않는다. inline function(예를 들어 component{() => <HomeScreen />})을 보내면 안된다.
+              ```
+        - Specifying options
+            - 네이게이터에 있는 각 screen은 header에서 렌더링될 타이틀과 같은 일부 option들을 지정할 수 있다. 
+              ```
+                <Stack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ title: 'Overview' }}
+                />
+              ```
+            - 때때로 네비게이터에 있는 모든 screen들에 같은 option을 적용하고 싶을 때가 있다. 네비게이터에 screenOptions prop를 이용하면 가능하다.
+        - Passing additional props
+- Guides
+- Navagators
+
+
 #### native app
 - 앱 개발 시 네이티브 코드를 사용하여 앱을 개발하는 방식
 

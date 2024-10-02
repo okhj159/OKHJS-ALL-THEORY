@@ -470,7 +470,232 @@
                         - 모든 컴포넌트 주위에 Suspense를 두면 안된다. Suspense는 사용자가 경험하기를 원하는 로딩 순서보다 더 세분화되어서는 안된다.
                           디자이너와 함께 작업하는 경우 로딩 상태를 어디에 배치해야 하는지 디자이너에게 물어보면 된다. 디자이너가 이미 디자인 와이어 프레임에
                           포함했을 가능성이 높다.
+                    - 새 콘텐츠가 로드되는 동안 이전 콘텐츠 보여주기
+                        - 예시
+                          ```
+                            export default function App() {
+                              const [query, setQuery] = useState('');
+                              return (
+                                <>
+                                  <label>
+                                    Search albums:
+                                    <input value={query} onChange={e => setQuery(e.target.value)} />
+                                  </label>
+                                  <Suspense fallback={<h2>Loading...</h2>}>
+                                    <SearchResults query={query} />
+                                  </Suspense>
+                                </>
+                              );
+                            }
+                          ```
+                        - 위 예시에서는 검색 결과를 가져오는 동안 SearchResults 컴포넌트가 지연된다. "a"를 입력하고 결과를 기다인 다음 "ab"로 바꾸면 "a"에 대한
+                          결과는 로딩 Fallback으로 바뀐다.
+                        - 일반적인 대체 UI 패턴은 목록들에 대한 업데이트를 연기하고 새 결과가 준비될 때까지 이전 결과를 계속 보여주는 것이다. useDeferredValue Hook을
+                          사용하면 쿼리의 지연된 버전을 아래로 전달할 수 있다.
+                          ```
+                            export default function App() {
+                              const [query, setQuery] = useState('');
+                              const deferredQuery = useDeferredValue(query);
+                              return (
+                                <>
+                                  <label>
+                                    Search albums:
+                                    <input value={query} onChange={e => setQuery(e.target.value)} />
+                                  </label>
+                                  <Suspense fallback={<h2>Loading...</h2>}>
+                                    <SearchResults query={deferredQuery} />
+                                  </Suspense>
+                                </>
+                              );
+                            }
+                          ```
+                        - query는 즉시 업데이트되므로 입력에 새 값이 표시된다. 그러나 deferredQuery는 데이터가 로드될 때까지 이전 값을 유지하므로
+                          SearchResults는 잠시 동안 이전 결과를 보여준다.
+                        - 사용자에게 더 명확하게 알리기 위해 이전 결과 목록이 표시될 때 시각적 표시를 추가할 수 있다.
+                          ```
+                            <div style={{
+                              opacity: query !== deferredQuery ? 0.5 : 1 
+                            }}>
+                              <SearchResults query={deferredQuery} />
+                            </div>
+                          ```
+                        - 아래 예시에서 "a"를 입력하고 결과가 로드될 때까지 기다린 다음 입력을 "ab"로 편집해 보자. 이제 새 결과가 로드될 때까지 Suspense Fallback 대신
+                          희미한 이전 결과 목록이 표시되는 것을 확인할 수 있다.
+                          ```
+                            import { Suspense, useState, useDeferredValue } from 'react';
+                            import SearchResults from './SearchResults.js';
 
+                            export default function App() {
+                              const [query, setQuery] = useState('');
+                              const deferredQuery = useDeferredValue(query);
+                              const isStale = query !== deferredQuery;
+                              return (
+                                <>
+                                  <label>
+                                    Search albums:
+                                    <input value={query} onChange={e => setQuery(e.target.value)} />
+                                  </label>
+                                  <Suspense fallback={<h2>Loading...</h2>}>
+                                    <div style={{ opacity: isStale ? 0.5 : 1 }}>
+                                      <SearchResults query={deferredQuery} />
+                                    </div>
+                                  </Suspense>
+                                </>
+                              );
+                            }
+                          ```
+                        - 중요!
+                          ```
+                            지연된 값(deferred value)과 Transitions을 사용하면 Suspense fallback 을 표시하지 않을 수 있다. Transitions는 전체
+                            업데이트를 긴급하지 않은 것으로 처리하므로 일반적으로 프레임워크와 router 라이브러리에서 navigation을 위해 사용된다. 반면에
+                            지연된 값(deferred value)은 UI의 일부를 긴급하지 않은 것으로 처리하고 나머지 UI보다 지연시키려는 목적의 애플리케이션 코드에서 유용하다. 
+                          ```
+                    - 이미 보인 콘텐츠가 숨겨지지 않도록 방치
+                        - 컴포넌트가 지연되면 가장 가까운 상위 Suspense가 Fallback을 보여주도록 전환한다. 이미 일부 콘텐츠가 보이는 경우 사용자 경험이 끊길 수 있다.
+                          ```
+                            import { Suspense, useState } from 'react';
+                            import IndexPage from './IndexPage.js';
+                            import ArtistPage from './ArtistPage.js';
+                            import Layout from './Layout.js';
+
+                            export default function App() {
+                              return (
+                                <Suspense fallback={<BigSpinner />}>
+                                  <Router />
+                                </Suspense>
+                              );
+                            }
+
+                            function Router() {
+                              const [page, setPage] = useState('/');
+
+                              function navigate(url) {
+                                setPage(url);
+                              }
+
+                              let content;
+                              if (page === '/') {
+                                content = (
+                                  <IndexPage navigate={navigate} />
+                                );
+                              } else if (page === '/the-beatles') {
+                                content = (
+                                  <ArtistPage
+                                    artist={{
+                                      id: 'the-beatles',
+                                      name: 'The Beatles',
+                                    }}
+                                  />
+                                );
+                              }
+                              return (
+                                <Layout>
+                                  {content}
+                                </Layout>
+                              );
+                            }
+
+                            function BigSpinner() {
+                              return <h2>🌀 Loading...</h2>;
+                            }
+
+                          ```
+                          ```
+                            export default function ArtistPage({ artist }) {
+                              return (
+                                <>
+                                  <h1>{artist.name}</h1>
+                                  <Biography artistId={artist.id} />
+                                  <Suspense fallback={<AlbumsGlimmer />}>
+                                    <Panel>
+                                      <Albums artistId={artist.id} />
+                                    </Panel>
+                                  </Suspense>
+                                </>
+                              );
+                            }
+
+                            function AlbumsGlimmer() {
+                              return (
+                                <div className="glimmer-panel">
+                                  <div className="glimmer-line" />
+                                  <div className="glimmer-line" />
+                                  <div className="glimmer-line" />
+                                </div>
+                              );
+                            }
+
+                          ```
+                        - 버튼을 눌렀을 때 Router 컴포넌트가 IndexPage 대신 ArtistPage를 렌더링했다. ArtistPage 내부의 컴포넌트가 지연됐기 때문에 가장
+                          가까운 Suspense가 Fallback을 보여주기 시작했다. 가장 가까운 Suspense가 root 근처에 있었기 때문에 전체 사이트 레이아웃이 BigSpinner로
+                          대체되었다.
+                        - 이를 방지하려면 startTransition을 사용하여 navigation state 업데이트를 Transition으로 처리할 수 있다.
+                          ```
+                            function Router() {
+                            const [page, setPage] = useState('/');
+
+                            function navigate(url) {
+                              startTransition(() => {
+                                setPage(url);      
+                              });
+                            }
+                            // ...
+                          ```
+                        - 이는 state 전환이 급하지 않으며, 이미 공개된 콘텐츠를 숨기는 대신 이전 페이지를 계속 표시하는 것이 좋다는 것을 React에게 알려준다. 이제
+                          버튼을 클릭하면 Biography가 로드될 떄까지 대기한다.
+                          ```
+                            import { Suspense, startTransition, useState } from 'react';
+                            import IndexPage from './IndexPage.js';
+                            import ArtistPage from './ArtistPage.js';
+                            import Layout from './Layout.js';
+
+                            export default function App() {
+                              return (
+                                <Suspense fallback={<BigSpinner />}>
+                                  <Router />
+                                </Suspense>
+                              );
+                            }
+
+                            function Router() {
+                              const [page, setPage] = useState('/');
+
+                              function navigate(url) {
+                                startTransition(() => {
+                                  setPage(url);
+                                });
+                              }
+
+                              let content;
+                              if (page === '/') {
+                                content = (
+                                  <IndexPage navigate={navigate} />
+                                );
+                              } else if (page === '/the-beatles') {
+                                content = (
+                                  <ArtistPage
+                                    artist={{
+                                      id: 'the-beatles',
+                                      name: 'The Beatles',
+                                    }}
+                                  />
+                                );
+                              }
+                              return (
+                                <Layout>
+                                  {content}
+                                </Layout>
+                              );
+                            }
+
+                            function BigSpinner() {
+                              return <h2>🌀 Loading...</h2>;
+                            }
+                          ```
+                        - Transition은 모든 콘텐츠가 로드될 떄까지 기다리지 않는다. 이미 보여진 콘텐츠가 숨겨지지 않도록 충분히 오래 기다린다. 예를 들어 웹사이트
+                          Layout은 이미 보이므로 로딩 스피너 뒤에 숨기는 것은 좋지 않다. 그러나 Albums 주위에 중첩된 Suspense는 새로운 것이므로 Transition이
+                          기다리지 않는다.
+                    - Transition이 발생하고 있음을 보여주기
         - API
     - React DOM
         - Hools

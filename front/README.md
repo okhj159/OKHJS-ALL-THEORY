@@ -698,7 +698,7 @@
                     - Transition이 발생하고 있음을 보여주기
         - API
     - React DOM
-        - Hools
+        - Hooks
         - 컴포넌트
         - API
         - 클라이언트 API
@@ -1778,9 +1778,106 @@
               ```
             - 때때로 네비게이터에 있는 모든 screen들에 같은 option을 적용하고 싶을 때가 있다. 네비게이터에 screenOptions prop를 이용하면 가능하다.
         - Passing additional props
-- Guides
-- Navagators
+            - 때로는 screen에 추가적인 prop를 전달하고 싶을 때가 있다. 2가지 방식으로 접근이 가능하다.
+                1. React context를 사용하고 context provider로 navigator를 감싸서 데이터를 화면으로 전달할 수 있다(권장)
+                2. component prop을 지정하는 대신에 화면에 render callback을 사용하라
+                  ```
+                    <Stack.Screen name="Home">
+                      {(props) => <HomeScreen {...props} extraData={someData} >}
+                    </Stack.Screen>
+                  ``` 
+        - Summary
+            - React Native는 웹 브라우저처럼 navigation을 위한 built-in API가 존재하지 않는다. React Navigation은 이와 함께 화면 간 전환을 위한
+              iOS와 Android의 제스처와 애니메이션을 제공한다.
+            - Stack.Navigator는 경로 구성을 하위 항목으로 삼고 구성을 위한 추가적인 propsd와 함께 컨텐츠를 렌더링하는 component이다.
+            - 각 Stack.Screen 컴포넌트는 경로의 name을 참조하는 'name props'와 경로를 렌더링하는 특정한 컴포넌트인 'component props'를 가진다. 이 2가지는 반드시 필요하다.
+            - stack의 초기 경로를 지정하려면 initialRouteName props를 제공하라.
+    - Moving between screens
+        - 웹 브라우저에서 화면을 이동하려면 다음과 같이 진핼할 수 있다.
+          `<a href="details.html">Go to Details</a>`
+        - 이런 방식으로 진행할 수도 있다.
+          ```
+            <a
+              onClick={() => {
+                window.location.href = 'details.html';
+              }}
+            >
+              Go to Details
+            </a>
+          ```
+        - Navigating to a new screen
+            ```
+              import * as React from 'react';
+              import { Button, View, Text } from 'react-native';
+              import { NavigationContainer } from '@react-navigation/native';
+              import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+              function HomeScreen({ navigation }) {
+                return (
+                  <View style={{ flex: 1, alignItems: 'center', justifyContents: 'center' }}>
+                    <Text>Home Screen</Text>
+                    <Button
+                      title: "Go to Details"
+                      onPress: {() => navigation.navigate('Details')}
+                    />
+                  </View>
+                );
+              }
+            ```
+            - 이를 분석해보자
+                1. navigation: navigation props는 native stack navigator의 모든 screen component에 전달된다.
+                2. navigate('Details'): 이동하려는 경로의 name을 사용하는 navigate 함수를 호출한다.
+        - Navigate to a route multiple times
+            ```
+              function DetailsScreen({ navigation }) {
+                return (
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text>Details Screen</Text>
+                    <Button
+                      title="Go to Details... again"
+                      onPress={() => navigation.navigate('Details')}
+                    />
+                  </View>
+                );
+              }
+            ```
+            - navigate 함수는 대략적으로 이 화면으로 이동이라는 의미이며, 만약 이미 이 화면에 있다면 아무것도 하지 않는 것이 합리적이다.
+            - 다른 details screen을 추가하고 싶다고 가정해보자. 이는 각 경로에 고유한 데이터를 전달할 때 매우 일반적인 경우이다. 이를 위해 'navigate'를
+              'push'로 바꿀 수 있다. 이는 기존 navigation history와 관계 없이 다른 경로를 추가하려는 의도를 표현할 수 있다.
+              ```
+                <Button
+                  title="Go to Details... again"
+                  onPress={() => navigation.push('Details')}
+                />
+              ```
+        - Going back
+            - native stack navigator가 제공하는 header는 현재 screen에서 뒤로갈 수 있는 경우에 자동으로 뒤로가기 버튼을 포함한다.
+            - 프로그래밍적으로 이 행위를 하려면 navigation.goBack()을 이용하면 된다.
+              ```
+                function DetailsScreen({ navigation }) {
+                  return (
+                    <View style={{ flex: 1, alignItems: 'center', justifyContents: 'center' }}>
+                      <Text>Details Screen</Text>
+                      <Button
+                        title="Go to Details... again"
+                        onPress={() => navigation.push('Details')}
+                      />
+                      <Button title="Go to Home" onPress={() => navigation,navigate('Home')} />
+                      <Button title="Go back" onPress{() => navigation.goBack()} />
+                    </View>
+                  )
+                }
+              ```
+    - Passing parameters to routes
+    - Configuring the header bar
+    - Header buttons
+    - Nesting navigators
+    - Navigation lifecycle
+- Guides
+    - Tab navigation
+    - Drawer navigation
+    - Supporting safe areas
+- Navagators
 
 #### native app
 - 앱 개발 시 네이티브 코드를 사용하여 앱을 개발하는 방식
@@ -1822,6 +1919,10 @@
             - React & Webpack
     - Testing
 - Tutorials
+    - Intro to Storybook
+    - Design System for Developers
+    - UI Testing Handbook
+    - Visual Testing Handbook
 
 #### monorepo
 - 하나의 저장소에 여러 프로젝트를 관리하는 방식

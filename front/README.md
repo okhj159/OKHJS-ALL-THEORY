@@ -1412,7 +1412,7 @@
                                   동봉된 Ruby 버전을 이용하여 설치할 수 있다.
                         - React Native CLI
                             - React Native는 CLI가 내장되어 있다. 특정 버전을 전역적으로 설치하고 관리하는 것보다는 Node.js에 내장된 npx
-                              의 런타임의 현재 버전에 접근하는 것이 좋다. npx react-native <command>를 이용하면 현재 안정적인 CLI 버전이
+                              의 런타임의 현재 버전에 접근하는 것이 좋다. npx react-native '<command>'를 이용하면 현재 안정적인 CLI 버전이
                               다운되고 실행된다.
                 - Android
                     - Installing dependencies
@@ -1879,6 +1879,11 @@
     - Supporting safe areas
 - Navagators
 
+##### React Native Framework
+
+###### Expo
+- 
+
 #### native app
 - 앱 개발 시 네이티브 코드를 사용하여 앱을 개발하는 방식
 
@@ -1937,6 +1942,21 @@
 - Introduction
     - What is TurboRepo?
         - JavaScript 및 TypeScript 코드베이스를 위한 고성능 빌드 시스템. 모노레포를 확장하도록 설계되었으며 단일 패키지 작업 공간 에서 워크플로도 더 빠르게 만든다.
+    - The monorepo problem
+        - Monorepos에는 다양한 이점이 있지만, 확장하는데 어려움이 있다. 각 workspace에는 테스트 도구, linting, 빌드 프로세스들이 있다. 하나의 모노레포에는 수천개의 실행 문제가 있다.
+    - The monorepo solution
+        - Turborepos가 monorepo의 확장 문제를 해결할 수 있다. 
+        - Turborepo는 최대 속도로 task를 예약하고 사용가능한 모든 코어에서 작업을 병렬화 한다.
+- Crafting your repository
+    - Structuring a repository
+    - Managing dependencies
+    - Creating an internal Package
+    - Configuring tasks
+    - Running tasks
+    - Caching
+    - Developing applications
+    - Using environment variables
+    - Constructing CI
 - 기타
     - 빌드 시스템
     - 모노레포를 확장하도록 설계되었으며 단일 패키지 작업 공간 에서 워크플로도 더 빠르게 만든다.

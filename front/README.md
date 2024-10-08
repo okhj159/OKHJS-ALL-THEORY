@@ -1521,6 +1521,33 @@
             - WebSocket Support
     - Debugging
     - Testing
+    - Native Modules
+        - Native Modules Intro
+        - Android Native Modules
+        - iOS Native Modules
+        - Native Modules NPM Package Setup
+        - Loval libraries setup
+    - Native Components
+        - Android Native UI Components
+        - iOS Native UI Components
+        - Direct Manipulation
+    - Android and iOS guides
+        - Android
+            - Headless JS
+            - Publishing to Google play Store
+            - Communication between native and React Native
+            - React Native Gradle Plugin
+        - iOS
+            - Linking Libraries
+            - Running On Simulator
+            - Communication between native and React Native
+            - App Extensions
+            - Publishing to Apple App Store
+                - 배포 프로세스는 다른 native iOS app과 동일하며, 몇 가지 추가 요소가 있다.
+                    1. Configure release scheme
+                        - App store에 배포할 앱을 구축하려면 Xcode에 있는 Release scheme을 사용해야 한다.
+                        - Release scheme을 사용하여 앱을 구성하려면, Product -> Scheme -> Edit Scheme으로 이동하라. 사이드 바에 있는 Run 탭을 선택하라, 그리고 Build Configuration 드롭다운을 하여 Release를 선택하라.
+                    2. Build app for release
 - Components
     - Core Components
         - Core Components and APIs

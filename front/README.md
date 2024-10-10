@@ -8,11 +8,12 @@
 5. [Package Manager](#Package-Manager)
 6. [Framework](#Framework)
 7. [Writing CSS](#Writing-CSS)
-8. [Testing](#Testing)
-9. [Type Checkers](#Type-Checkers)
-10. [Server Side Rendering](#Server-Side-Rendering)
-11. [Mobile Applications](#Mobile-Applications)
-12. [Bonus Content](#Bonus-Content)
+8. [Build Tools](#Build-Tools)
+9. [Testing](#Testing)
+10. [Type Checkers](#Type-Checkers)
+11. [Server Side Rendering](#Server-Side-Rendering)
+12. [Mobile Applications](#Mobile-Applications)
+13. [Bonus Content](#Bonus-Content)
 
 ### INTERNET
 #### HTTP
@@ -981,6 +982,44 @@
                     - 앱 내 렌더링 최적화와 관련하여 Zustand와 Redux의 접근 방식에는 큰 차이가 없다. 두 라이브러리 모두
                       선택기를 사용하여 렌더링 최적화를 수동으로 적용하는 것이 좋다.
 
+#### React Library
+##### Store
+###### Redux
+
+###### Redux Tookit
+- Introduction
+    - Getting started
+        - Purpose
+            - Redux의 3가지 문제를 해결하기 위해 만들어졌다.
+                1. Redux store를 구성하는 것은 너무 복잡하다.
+                2. Redux가 유용한 작업을 하려면 많은 패키지를 추가해야 한다.
+                3. Redux는 많은 보일러플레이트 코드를 필요로 한다.
+        - Installation
+        - What's Included
+            - Redux toolkit은 다음 API들을 포함하고 있다.
+                - configureStore()
+                - createReducer()
+                - createAction()
+                - createSlice()
+                - createSlice()
+                - combineSlices()
+                - createAsyncThunk
+                - createEntityAdaptor
+        - RTK Query
+            - What's included
+                - RTK Query는 다음 API들을 포함하고 있다.
+                    - createApi()
+                    - fetchBaseQuery()
+                    - <ApiProvider /> 
+                    - setupListeners
+    - Why Redux Toolkit is How To Use Redux Today
+
+###### MobX
+
+###### Recoil
+
+###### Zustand
+
 <hr />
 
 ### Writing CSS
@@ -1050,6 +1089,19 @@
 - BASE STYLES
 - LAYOUT
 - FLEXBOX AND GRID
+
+<hr />
+
+### Build Tools
+
+#### Linters and Formatters
+
+#### Module Bundlers
+
+##### vite
+
+##### Webpack
+-
 
 <hr />
 

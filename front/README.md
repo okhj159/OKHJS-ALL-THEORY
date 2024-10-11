@@ -1010,7 +1010,7 @@
                 - RTK Query는 다음 API들을 포함하고 있다.
                     - createApi()
                     - fetchBaseQuery()
-                    - <ApiProvider /> 
+                    - `<ApiProvider />` 
                     - setupListeners
     - Why Redux Toolkit is How To Use Redux Today
 
@@ -2040,5 +2040,39 @@
     - 빌드 시스템
     - 모노레포를 확장하도록 설계되었으며 단일 패키지 작업 공간 에서 워크플로도 더 빠르게 만든다.
 
+#### BaaS(Backend-as-a-Service)
+- 개발자가 백엔드 인프라를 직접 구축하지 않고도 애플리케이션을 만들 수 있게 해주는 클라우드 서비스 모델
+- 주요 기능
+    - 데이터베이스 관리
+    - 사용자 인증
+    - 푸시 알림
+    - 파일 저장소
+    - API 호스팅
+    - 서버리스 함수 실행
+##### Firebase
+
+#### Cloud
+##### vercel
+- Documentation
+  - Platform
+      - Get Started
+          - Step 1: Projects & Deployments
+          - Step 2: Add a Domain
+          - Step 3: Collaborate
+      - Frameworks
+      - Projects
+          - Project Dashboard
+          - Monorepos
+          - Environment Variables
+          - vercel.json
+      - Builds
+      - Deployments
+  - Infrastructure
+  - Workflow
+  - Storage
+
+##### netlify
+
+##### amplify
 
 <hr />

@@ -106,4 +106,81 @@
               ```
               이렇게 하면 함수 my-function에 대한 prod 한정자에 함수 URL이 추가됨
 
+### CI / CD Tools
+#### Github Actions
+- GitHub Actions 정보
+    - Github Actions의 이해
+        - 개요
+            - GitHub Actions는 빌드, 테스트 및 배포 파이프라인을 자동화할 수 있는 CI/CD(연속 통합 및 지속적인 업데이트) 플랫폼이다. 리포지
+            토리에 대한 모든 끌어오기 요청을 빌드 및 테스트하거나 병합된 끌어오기 요청을 프로덕션에 배포하는 워크플로를 만들 수 있다.
+        - GitHub Actions의 구성 요소
+            - 워크플로
+                - 워크플로는 하나 이상의 작업을 실행할 구성 가능한 자동화된 프로세스이다. 워크플로는 리포지토리에 체크 안된 YAML 파일에서 정의되며,
+                리포지토리의 이벤트로 트리거될 때 실행되거나 수동으로 또는 정의된 일정에 따라 트리거될 수 있다.
+                - 워크플로는 리포지토리의 .github/workflows 디렉터리에 정의된다. 리포지토리에 다음과 같은 각각의 다른 작업 집합을 수행하는 여러
+                워크플로가 있을 수 있다.
+                    - 끌어오기 요청을 빌드하고 테스트한다.
+                    - 릴리스가 생성될 때마다 애플리케이션을 배포한다.
+                    - 새 문제가 보고될 때마다 레이블을 추가한다.
+                - 다른 워크플로 내에서 워크플로를 참조할 수 있다.
+            - 이벤트
+                - 이벤트는 워크플로 실행을 트리거하는 리포지토리의 특정 활동이다. 예를 들어 누군가가 끌어오기 요청을 만들거나, 이슈를 열거나, 리포지토리에
+                커밋을 푸시할 때 GitHub에서 활동이 시작될 수 있다. 일정에 따라 REST API에 게시하여 또는 수동으로 워크플로를 트리거할 수 있다.
+            - 작업
+                - 작업은 동일한 실행기에서 실행되는 워크플로의 단계 집합이다.
+                - 작업 간 종속성을 구성할 수 있다. 기본적으로 작업은 종속성이 없으며 병렬로 실행된다. 작업이 다른 작업에 종속되면 작업은 실행하기 전에 종속
+                작업이 완료되기를 기다린다.
+                - 예를 들어 작업 종속성 없이 서로 다른 아키텍처에 대한 여러 빌드 작업과 해당 빌드에 종속되는 패키징 작업을 구성할 수 있다. 빌드 작업은
+                병렬로 실행되며, 모두 성공적으로 완료되면 패키징 작업이 실행된다.
+            - actions
+                - 작업은 복잡하지만 자주 반복되는 태스크를 수행하는 GitHub Actions 플랫폼용 사용자 지정 애프리에시션이다. 작업은 GitHub에서 Git 리포지
+                토리를 가져오거나, 빌드 환경에 맞는 올바은 도구 체인을 설정하거나, 클라우드 공급자에 대한 인증을 설정할 수 있다.
+            - 실행기
+                - 실행기는 트리거될 때 워크플로를 실행하는 서버이다. 각 실행자는 한 번에 하나의 작업을 실행할 수 있다. GitHub는 워크플로를 실행할 Ubuntu Linux,
+                Microsoft Windows, maxOS 실행기를 제공한다. 각 워크플로 실행은 새로 프로비저닝된 새 가상 머신에서 실행된다.
+- 워크플로 작성
+    - 빠른 시작
+        - 첫 번째 워크플로 만들기
+            1. Github 리포지토리의 .github/workflows 디렉터리에 github-actions-demo.yml이라는 워크플로 파일을 생성한다.
+                - .github/workflows 디렉터리가 이미 있는 경우 Github에서 해당 디렉터리로 이동하고 파일 추가를 클릭한 다음 새 파일 만들기를 클릭하고
+                파일 이름을 github-actions-demo.yml로 지정
+            2. 다음 YAML 콘텐츠를 github-actions-demo.yml 파일에 복사한다.
+                ```
+                    name: GitHub Actions Demo
+                    run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+                    on: [push]
+                    jobs:
+                    Explore-GitHub-Actions:
+                        runs-on: ubuntu-latest
+                        steps:
+                        - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+                        - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+                        - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+                        - name: Check out repository code
+                            uses: actions/checkout@v4
+                        - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+                        - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+                        - name: List files in the repository
+                            run: |
+                            ls ${{ github.workspace }}
+                        - run: echo "🍏 This job's status is ${{ job.status }}."
+                ```
+            3. 변경 내용 커밋을 클릭
+            4. "변경 내용 제안" 대화 상자에서 기본 분기를 커밋하는 옵션이나 새 분기를 생성하고 pull request를 시작하는 옵션을 선택한다. 그런 다음 변경 내용 커밋
+            또는 변경 내용 제안을 클릭한다.
+    - 워크플로 정보
+        - 워크플로 정보
+            - 워크플로는 하나 이상의 작업을 실행할 구성 가능한 자동화된 프로세스이다. 워크플로는 리포지토리에 체크인된 YAML 파일에서 정의되며, 리포지토리의 이벤트로
+            트리거될 때 실행되거나 수동으로 또는 정의된 일정에 따라 트리거될 수 있다.
+            - 워크플로는 리포지토리의 .github/workflow 디렉터리에 정의된다. 리포지토리에 다음과 같은 각각의 다른 작업 집합을 수행하는 여러 워크플로가 있을 수 있다.
+                - 끌어오기 요청을 빌드하고 테스트한다.
+                - 릴리스가 생성될 때마다 애플리케이션을 배포한다,
+                - 새 문제가 보고될 때마다 레이블을 추가한다.
+        - 워크플로 기본 사항
+            - 워크플로에는 다음과 같은 기본 구성 요소가 포함되어야 한다.
+                1. 워크플로를 트리거하는 하나 이상의 이벤트
+                2. 하나 이상의 _작업_이며, 각 작업은 실행기머신에서 실행되고 일련의 하나 이상의 _단계_를 실행한다.
+                3. 각 단계에서는 워크플로를 간소화할 수 있는 재사용 가능한 확장인 작업을 정의하거나 실행하는 스크립트를 실행할 수 있다.
+        - 워크플로 트리거
+
 <hr />

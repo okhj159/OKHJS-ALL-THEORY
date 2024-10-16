@@ -1967,16 +1967,29 @@
 - 앱 개발 시 네이티브 코드를 사용하여 앱을 개발하는 방식
 
 ##### Swift
-- 애플의 iOS, macOS 드 자사의 제품 개발에 활용하는 프로그래밍 언어
-- 언어적 특성
-    - 안정성 : 엄격한 문법
-    - 신속성 : 실행 속도의 최적화, 컴파일러를 지속적으로 개량해 더 빠른 컴파일 성능 구현을 지향
-    - 다중 패러다임 프로그래밍 : 명령형, 객체지향, 함수형, 프로토콜 지향 프로그래밍 패러다임을 차용
-- 스위프트의 변수와 상수
-    - var : 변수 키워드
-      `var [변수명]: [데이터 타입] = [값]` 형태로 선언하며, 데이터 타입은 생략 가능
-    - let : 상수 키워드
-      `let [상수명]: [데이터 타입] = [값]`
+- Language Guide
+  - The Basics
+  - Basic Operators
+  - Strings and Characters
+  - Collection Types
+  - Control Flow
+  - Functions
+  - Closures
+  - Enumerations
+  - Structures and Classes
+  - Properties
+  - Methods 
+- 기타
+  - 애플의 iOS, macOS 드 자사의 제품 개발에 활용하는 프로그래밍 언어
+  - 언어적 특성
+      - 안정성 : 엄격한 문법
+      - 신속성 : 실행 속도의 최적화, 컴파일러를 지속적으로 개량해 더 빠른 컴파일 성능 구현을 지향
+      - 다중 패러다임 프로그래밍 : 명령형, 객체지향, 함수형, 프로토콜 지향 프로그래밍 패러다임을 차용
+  - 스위프트의 변수와 상수
+      - var : 변수 키워드
+        `var [변수명]: [데이터 타입] = [값]` 형태로 선언하며, 데이터 타입은 생략 가능
+      - let : 상수 키워드
+        `let [상수명]: [데이터 타입] = [값]`
 
 ##### Kotlin
 - 안드로이드 앱 개발을 위한 언어
@@ -2243,6 +2256,132 @@
   - Emulator Suite
   - Authentication
     - iOS+
+      - Sign in With a pre-built UI
+        - 시작하기 전에
+          1. Apple 프로젝트에 Firebase를 추가한다.
+          2. Podfile에 FirebaseUI를 추가한다.
+            - `pod 'FirebaseUI'`
+            - 원하는 경우 사용할 인증 구성요소와 제공업체만 추가할 수 있다.
+              ```
+              pod 'FirebaseUI/Auth'
+
+              pod 'FirebaseUI/Google'
+              pod 'FirebaseUI/Facebook'
+              pod 'FirebaseUI/OAuth' # Used for Sing in with Apple, Twitter, etc
+              pod 'FirebaseUI/Phone'
+              ```
+          3. 아직 Firebase 프로젝트에 앱을 연결하지 않았다면 Firebase Console에서 연결한다.
+        - 로그인 방법 설정
+          - 이메일 주소 및 비밀번호
+            - Firebase Console에서 인증 섹션을 열고 이메일 및 비밀번호 인증을 사용 설정한다.
+          - 이메일 링크 인증
+            1. Firebase Console에서 인증 섹션을 연다. 로그인 방법 탭에서 이메일/비밀번호 제공업체를 사용 설정한다. 이메일 링크 로그인을 사용하려면
+            이메일/비밀번호 로그인이 사용 설정되어야 한다.
+            2. 같은 섹션에서 이메일 링크(비밀번호가 없는 로그인) 로그인 방법을 사용 설정하고 저장을 클릭한다.
+            3. FIREmailLinkAuthSignInMethod로 FUIEmailAuth 인스턴스를 초기화하면 이메일 링크 로그인을 사용 설정할 수 있다. handleCodeInApp이 true로
+            설정된 유효한 FIRActionCodeSettings 객체도 제공해야 한다.
+              - ```
+                var actionCodeSettings = ActionCodeSettings()
+                actionCodeSettings.url = URL(string: "https://example.appspot.com")
+                actionCodeSettings.handleCodeInApp = true
+                actionCodeSettings.setAndroidPackageName("com.firebase.example", installIfNotAvailable: false, minimumVersion: "12")
+
+                let provider = FUIEmailAuth(authUI: FUIAuth.defaultAuthUI()!,
+                                            signInMethod: FIREmailLinkAuthSignInMethod,
+                                            forceSameDevice: false,
+                                            allowNewEmailAccounts: true,
+                                            actionCodeSetting: actionCodeSettings)
+                ```
+            
+            1. 또한 초기화 메서드에 전달할 URL을 허용해야 한다. 이 URL을 허용하려면 Firebase Console에서 인증 섹션을 연다. 로그인 방법 탭에 있는 승인된 도메인에 해당
+            URL을 추가한다.
+            2. 딥 링크가 포착되면 이를 처리할 수 있도록 인증 UI로 전달해야 한다.
+              - FUIAuth.defaultAuthUI()!.handleOpen(url, sourceApplication: sourceApplicaion)
+
+            1. FirebaseUI-iOS의 이메일 링크 로그인은 FirebaseUI-Android 및 FirebaseUI-web과 호환되므로 FirebaseUI-Android에서 흐름을 시작한 사용자가
+            링크를 열고 FirebaseUI-web으로 로그인을 완료할 수 있다. 이와 역순으로 진행되는 흐름 역시 가능하다.
+          - Apple
+            1. Firebase Apple 계정으로 로그인 가이드의 시작하기 전에 및 Apple의 익명 처리된 데이터 요구사항 준수 섹션을 따르시오
+            2. Apple 계정으로 로그인 기능을 자격 파일에 추가한다.
+            3. Apple 로그인용으로 구성된 OAuth 제공업체 인스턴스를 초기화한다.
+              - provider = FUIOAuth.appleAuthProvider()
+          - Google
+          - Twitter
+          - 전화번호
+        - 로그인
+          - FirebaseUI 로그인 흐름을 시작하려면 먼저 FirebaseUI를 초기화한다.
+            ```
+            import FirebaseAuthUI
+
+            /* ... */
+
+            FirebaseApp.configure()
+            let authUI = FUIAuth.defaultAuthUI()
+            // You need to adopt a FUIAuthDelegate protocol to receive callback
+            authUI.delegate = self
+            ```
+          - 그런 다음 지원하고자 하는 로그인 방법을 사용하도록 FirebaseUI를 구성한다.
+            ```
+            import FirebaseAuthUI
+            import FirebaseFacebookAuthUI
+            import FirebaseGoogleAuthUI
+            import FirebaseOAuthUI
+            import FirebasePhoneAuthUI
+
+            let providers: [FUIAuthProvider] = [
+              FUIGoogleAuth(),
+              FUIFacebookAuth(),
+              FUITwitterAuth(),
+              FUIPhoneAuth(authUI:FUIAuth.defaultAuthUI()),
+            ]
+            self.authUI.providers = providers
+            ```
+          - Google 또는 Facebook 로그인을 사용 설정했다면 Google 및 Facebook 로그인 흐름의 결과에 대한 핸들러를 구현한다.
+            ```
+            func application(_ app: UIApplication, open url: URL,
+                options: [UIApplicationOpenURLOptionKey : Any]) -> Bool {
+              let souceApplication = option[UIApplicationOpenURLOptionsKey.sourceApplication] as! String?
+              if FUIAuth.defaultAuthUI()?.handleOpen(url, sourceApplication: sourceApplication) ?? false {
+                return true
+              }
+              // other URL handling goes here.
+              return false
+            }
+            ```
+          - 마지막으로 FUIAuth애서 AuthViewController의 인스턴스를 가져온다. 그런 다음 앱의 첫 번째 뷰 컨트롤러로 표시하거나 앱의 다른 뷰 컨트롤러로 표시할 수 있다.
+            ```
+            로그인 방법 선택기를 가져오는 방법은 다음과 같다.
+            let authViewController = authUI.authViewController()
+
+            전화번호 로그인만 사용하려면 전화번호 로그인 보기를 바로 표시할 수 있다.
+            let phoneProvider = FUIAuth.defaultAuthUI().providers.first as! FUIPhoneAuth
+            phoneProvider.signIn(withPresenting: currentlyVisibleController, phoneNumber: nil)
+            ```
+          - 인증 번호를 표시하고 사용자가 로그인한 후 결과가 `didSingInWithUser:error:` 메서드의 FirebaseUI 인증 대리자에게 반환된다.
+            ```
+            func authUI(_ authUI: FUIAuth, didSignInWith user: FIRUser?, error: Error?) {
+              // handle user and error as necessary
+            }
+            ```
+        - 로그아웃
+          - FirebaseUI는 Firebase 인증은 물론 모든 소셜 ID 공급업체에서 로그아웃시키는 편리한 방법을 제공한다.
+      - Get Started(Apple 플랫폼에서 Firebase 인증 시작하기)
+        - Firebase에 앱 연결
+          1. Firebase SDK를 설치한다.
+          2. Firebase Console에서 Firebase 프로젝트에 앱을 추가한다.
+        - 앱에 Firebase Authentication 추가
+          1. 앱 프로젝트를 연 상태로 Xcode에서 File(파일) > Add Packages(패키지 추가)로 이동한다.
+          2. 메시지가 표시되면 Firebase Apple 플랫폼 SDK 저장소를 추가한다.
+            `https://github.com/firebase/firebase-ios-sdk.git`
+          3. Firebase Authentication 라이브러리를 선택한다.
+          4. 타겟 빌드 설정의 Other Linker Flags(기타 링커 플래그) 섹션에 -ObjC 플래그를 추가한다.
+          5. 완료되면 Xcode가 백그라운드에서 자동으로 종속 항목을 확인하고 다운로드하기 시작한다.
+        - (선택사항) Firebase Local Emulator Suite으로 프로토타입 제작 및 테스트
+        - Firebase SDK 초기화
+        - 인증 상테 수신 대기
+        - 신규 사용자 가입
+        - 기존 사용자 로그인
+        - 사용자 정보 가져오기
     - Android
     - Web
       - Sign in with a pre-built UI
@@ -2436,16 +2575,321 @@
         - 사용자 생성
         - 현재 로그인한 사용자 가져오기
           - 현재 사용자를 가져올 때 권장하는 방법은 다음과 같이 Auth 객체에 관찰자를 설정하는 것이다.
+            - ```
+              import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+              const auth = getAuth();
+              onAuthStateChanged(auth, (user) => {
+                if (user) {
+                  // User is signed in, see docs for a list of available properties
+                  // https://firebase.google.com/docs/reference/js/auth.user
+                  const uid = user.uid;
+                  // ...
+                } else {
+                  // User is signed out
+                  // ...
+                }
+              });
+              ```
+          - 관찰자를 사용하면 현재 사용자를 가져올 때 Auth 객체가 중간 단계(초기화 등)에 있지 않도록 할 수 있다. signInWithRedirect를 사용하면 onAuthStateChanged
+          관찰자는 getRedirectResult가 해결될 때까지 기다린 후에 트리거된다.
+          - currentUser 속성을 사용하여 현재 로그인한 사용자를 가져올 수도 있다. 사용자가 로그인 상태가 아니라면 currentUser 값이 null이다.
+            - ```
+              import { getAuth } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+
+              if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/auth.user
+                // ...
+              } else {
+                // No user is signed in.
+              }
+              ```
         - 사용자 프로필 가져오기
+          - 사용자의 프로필 정보를 가져오려면 User 인스턴스의 속성을 사용한다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+              if (user !== null) {
+                // The user object has basic properties such as display name, email, etc.
+                const displayName = user.displayName;
+                const email = user.email;
+                const photoURL = user.photoURL;
+                const emailVerified = user.emailVerified;
+
+                // The user's ID, unique to the Firebase project. Do NOT use
+                // this value to authenticate with your backend server, if
+                // you have one. Use User.getToken() instead.
+                const uid = user.uid;
+              }
+              ```
         - 제공업체별 사용자 프로필 정보 가져오기
+          - 사용자에게 연결된 로그인 제공업체로부터 프로필 정보를 가져오려면 providerData 속성을 사용한다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+
+              if (user !== null) {
+                user.providerData.forEach((profile) => {
+                  console.log("Sign-in provider: " + profile.providerId);
+                  console.log(" Provider-specific UID: " + profile.uid);
+                  console.log(" Name: " + profile.displayName);
+                  console.log(" Email: " + profile.email);
+                  console.log(" Photo URL: " + profile.photoURL);
+                });
+              }
+              ```
         - 사용자 프로필 업데이트
+          - 사용자의 표시 이름 및 프로필 사진 URL 등의 기본 프로필 정보를 업데이트할 때는 updateProfile 메서드를 사용한다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, updateProfile } from "firebase/auth";
+              
+              const auth = getAuth();
+              updateProfile(auth.currentUser, {
+                displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
+              }).then(() => {
+                // Profile updated!
+                // ...
+              }).catch((error) => {
+                // An error occurred
+                // ...
+              });
+              ```
         - 사용자 이메일 주소 설정
+          - updateEmail 메서드로 사용자의 이메일 주소를 설정할 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, updateEmail } from "firebase/auth";
+
+              const auth = getAuth();
+              updateEmail(auth.currenUser, "user@example.com").then(() => {
+                // Email updated!
+                // ...
+              }).catch((error) => {
+                // An error occurred
+                // ...
+              });
+              ```
         - 사용자에게 인증 메일 보내기
+          - sendEmailVerification 메서드로 사용자에게 주소 인증 메일을 보낼 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, sendEmailVerification } from "firebase/auth";
+
+              const auth = getAuth();
+              sendEmailVerification(auth.currentUser)
+                .then(() => {
+                  // Email verfication sent!
+                  // ...
+                });
+              ```
+          - 또한 Firebase Console '인증' 섹션의 '이메일 템플릿' 페이지에서 이메일 템플릿을 맞춤설정할 수 있다.
+          - 인증 메일을 보낼 떄 연결 URL을 통해 상태를 전달하여 앱으로 다시 리디렉션할 수도 있다.
+          - 또한 이메일을 보내기 전에 인증 인스턴스의 언어 코드를 업데이트하면 인증 메일을 현지화할 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth } from "firebase/auth";
+
+              const auth = getAuth();
+              auth.languageCode = 'it';
+              // To apply the default browser preference instead of explicitly setting it.
+              // auth.useDeviceLanguage();
+              ```
         - 사용자 비밀번호 설정
+          - updatePassword 메서드로 사용자의 비밀번호를 설정할 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, updatePassword } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+              const newPassword = getASecureRandomPassword();
+
+              updatePassword(user, newPassword).then(() => {
+                // Update successful.
+              }).catch((error) => {
+                // An error occurred
+                // ...
+              });
+              ```
         - 비밀번호 재설정 이메일 보내기
+          - sendPasswordResetEmail 메서드로 사용자에게 비밀번호 재설정 이메일을 보낼 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+
+              const auth = getAuth();
+              sendPasswordResetEmail(auth, email)
+                .then(() => {
+                  // Password reset email sent!
+                  // ..
+                })
+                .catch((error) => {
+                  const errorCode = error.code;
+                  const errorMessage = error.message;
+                  // ..
+                });
+              ```
+          - 또한 Firebase Console '인증' 섹션의 '이메일 템플릿' 페이지에서 이메일 템플릿을 맞춤설정할 수 있다.
+          - 비밀번호 재설정 이메일을 보낼 때 연결 URL을 통해 상태를 전달하여 앱으로 다시 리디렉션할 수도 있다.
+          - 또한 이메일을 보내기 전에 인증 인스턴스의 언어 코드를 업데이트하면 비밀번호 재설정 이메일을 현지화할 수 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth } from "firebase/auth";
+
+              const auth = getAuth();
+              auth.languageCode = 'it';
+              // To apply the default browser preference instead of explicitly setting it.
+              // auth.useDeviceLanguage();
+              ```
+          - 또한 Firebase Console에서 비밀번호 재설정 이메일을 보낼 수도 있다.
         - 사용자 삭제하기
+          - delete 메서드로 사용자 계정을 삭제할 수도 있다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, deleteUser } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+
+              deleteUser(user).then(() => {
+                // User deleted.
+              }).catch((error) => {
+                // An error occurred
+                // ...
+              });
+              ```
+          - 또한 Firebase Console '인증' 섹션의 '사용자' 페이지에서 사용자를 삭제할 수도 있다.
         - 사용자 재인증하기
+          - 계정 삭제, 기본 이메일 주소 설정, 비밀번호 변경과 같이 보안에 민감한 작업을 하려면 사용자가 최근에 로그인한 적이 있어야 한다. 이런 작업을 할 때 사용자가 너무
+          오래 전에 로그인했다면 오류가 발생하면서 작업이 실패한다. 이때에는 사용자에게 새로운 로그인 인증 정보를 받은 다음 이 정보를 reauthenticateWithCredential에
+          전달하여 사용자를 재인증해야 한다. 예를 들면 다음과 같다.
+            - ```
+              import { getAuth, reauthenticateWithCredential } from "firebase/auth";
+
+              const auth = getAuth();
+              const user = auth.currentUser;
+
+              // TODO(you): prompt the user re-provide their sign-in credentials
+              const credential = promptForCredentials();
+
+              reauthenticateWithCredential(user, credential).then(() => {
+                // User re-authenticated.
+              }). catch((error) => {
+                // An error occurred
+                // ...
+              });
+              ```
         - 사용자 계정 가져오기
+          - Firebase CLI의 auth:import 명령어를 사용하여 파일에서 Firebase 프로젝트로 사용자 계정을 가져올 수 있다. 예를 들면 다음과 같다.
+            - `firebase auth:import users.json --hash-algo=scrypt --rounds=8 --mem-cost=14`
+      - Password Authentication
+        - 시작하기 전에
+          1. 자바스크립트 프로젝트에 Firebase를 추가한다.
+          2. 아직 Firebase 프로젝트에 앱을 연결하지 않았다면 Firebase Console에서 연결한다.
+          3. 다음과 같이 이메일 및 비밀번호 로그인을 사용 설정한다.
+            - Firebase Console에서 인증 섹션을 연다.
+            - 로그인 방법 탭에서 이메일/비밀번호 로그인 방법을 사용 설정하고 저장을 클릭한다.
+        - 비밀번호 기반 계정 만들기
+          - 비밀번호가 있는 신규 사용자 계정을 만들려면 앱의 로그인 페이지에서 다음 절차를 완료한다.
+            1. 신규 사용자가 앱의 가입 양식을 사용하여 가입하면 앱에서 요구하는 새 계정 유효성 검사 단계를 완료한다. 검사 항목애는 신규 계정의 비밀번호를 정확하게 입력했는지,
+            비밀번호가 복잡성 조건을 충족하는지 등이 있다.
+            2. 다음과 같이 신규 사용자의 이메일 주소와 비밀번호를 createUserWithEmailAndPassword에 전달하여 신규 계정을 생성한다.
+              - ```
+                import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+                const auth = getAuth();
+                createUserWithEmailAndPassword(auth, email, password)
+                  .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    // ...
+                  })
+                  .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // ..
+                  });
+                ```
+              - 신규 계정 생성에 성공하면 사용자가 자동으로 로그인된다.
+        - 이메일 주소와 비밀번호로 사용자 로그인
+          - 비밀번호로 사용자 로그인을 처리하는 절차는 신규 계정을 생성하는 절차와 비슷하다. 앱의 로그인 페이지에서 다음 절차를 따르도록
+            - 사용자가 앱에 로그인하면 다음과 같이 사용자의 이메일 주소와 비밀번호를 signInWithEmailAndPassword에 전달한다.
+              - ```
+                import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+                const auth = getAuth();
+                signInWithEmailAndPassword(auth, email, password)
+                  .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    // ...
+                  })
+                  .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                  })
+                ```
+      - Email Link Authentication(이메일 링크를 사용하여 자바스크립트에서 Firebase 인증)
+        - Firebase 프로젝트에서 이메일 링크 로그인 사용 설정
+          1. Firebase Console에서 인증 섹션을 연다.
+          2. 로그인 방법 탭에서 이메일/비밀번호 제공업체를 사용 설정한다. 이메일 링크 로그인을 사용하려면 이메일/비밀번호를 로그인이 사용 설정되어야 한다.
+          3. 같은 섹션에서 이메일 링크(비밀번호가 없는 로그인) 로그인을 사용 설정한다.
+          4. 저장을 클릭한다.
+        - 사용자의 이메일 주소로 인증 링크 전송
+          - 이 인증 과정을 시작하려면 사용자에게 이메일 주소를 제공하도록 요청하는 인터페이스를 제시하고 sendSignInLinkToEmail을 호출하여 Firebase가 사용자의
+          이메일에 인증 링크를 전송하도록 요청한다.
+            1. Firebase에 이메일 링크를 만드는 방법에 대한 지침을 제시하는 ActionCodeSettings 객체를 만든다. 다음 필드를 설정한다.
+              - url: 삽입할 딥 링크 및 함께 전달할 추가 상태이다. 승인된 도메인의 Firebase Console 목록에 링크의 도메인을 추가해야 하며 로그인 방법 탭
+              (인증 -> 로그인 방법)으로 이동하여 확인할 수 있다.
+              - android 및 ios: Android 또는 Apple 기기에서 로그인 링크를 열 때 사용하는 앱이다. 모바일 앱을 통해 이메일 작업 링크를 열기 위해 Firebase 동적
+              링크를 구성하는 방법에 대해 자세히 알아보도록.
+              - handleCodeInApp: true로 설정한다. 다른 대역 외 이메일 작업(비밀번호 재설정 및 이메일 인증)과 달리 이 로그인 작업은 항상 앱에서 완료해야 한다. 그
+              이유는 인증 과정 마지막에 사용자가 로그인하고 사용자의 인증 상태를 앱에서 유지해야 하기 때문이다.
+              - dynamicLinkDomain: 프로젝트에 여러 개의 커스텀 동적 링크 도메인이 정의된 경우 지정된 모바일 앱을 통해 링크를 열 때 사용할 도메인을 지정한다.
+              (예: example.page.link). 지정하지 않으면 첫 번째 도메인이 자동으로 선택된다.
+                - ```
+                  const actionCodeSettings = {
+                    // URL you want to redirect back to. The domain (www.example.com) for this
+                    // URL must be in the authorized domains list in the Firebase console.
+                    url: 'https://www.example.com/finishSignUp?cartId=1234',
+                    // This must be true.
+                    handleCodeInApp: true,
+                    iOS: {
+                      bundleId: 'com.example.ios'
+                    },
+                    android: {
+                      packageName: 'com.example.android',
+                      installApp: true,
+                      minimumVersion: '12',
+                    },
+                    dynamicLinkDomain: 'example.page.link'
+                  };
+                  ```
+              - ActionCodeSettings에 대해 자세히 알아보려면 이메일 작업의 상태 전달 섹션을 참고
+            2. 사용자에세 이메일 주소 입력을 요청한다.
+            3. 사용자의 이메일에 인증 링크를 전송하고 사용자가 같은 기기에서 이메일 로그인을 완료할 경우에 대비해 사용자의 이메일을 저장한다.
+              - ```
+                import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
+
+                const auth = getAuth();
+                sendSignInLinkToEmail(auth, email, actionCodeSettings)
+                  .then(() => {
+                    // The link was successfully sent. Inform the user.
+                    // Save the email locally so you don't need to ask the user for it again
+                    // if they open the link on the same device.
+                    window.localStorage.setItem('emailForSignIn', email);
+                    // ...
+                  })
+                  .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // ...
+                  });
+                ```
+          - 이메일 링크로 로그인 완료
+      - Google
+      - Facebook Login
 
 #### Cloud
 ##### GitHub Pages
@@ -2467,18 +2911,18 @@
 ##### vercel
 - Documentation
   - Platform
-      - Get Started
-          - Step 1: Projects & Deployments
-          - Step 2: Add a Domain
-          - Step 3: Collaborate
-      - Frameworks
-      - Projects
-          - Project Dashboard
-          - Monorepos
-          - Environment Variables
-          - vercel.json
-      - Builds
-      - Deployments
+    - Get Started
+      - Step 1: Projects & Deployments
+      - Step 2: Add a Domain
+      - Step 3: Collaborate
+    - Frameworks
+    - Projects
+      - Project Dashboard
+      - Monorepos
+      - Environment Variables
+      - vercel.json
+    - Builds
+    - Deployments
   - Infrastructure
   - Workflow
   - Storage

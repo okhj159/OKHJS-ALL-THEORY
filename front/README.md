@@ -2378,10 +2378,70 @@
           5. 완료되면 Xcode가 백그라운드에서 자동으로 종속 항목을 확인하고 다운로드하기 시작한다.
         - (선택사항) Firebase Local Emulator Suite으로 프로토타입 제작 및 테스트
         - Firebase SDK 초기화
+          - 우선 앱 대리자에서 Firebase SDK를 가져온다.
+            `import FirebaseCore`
+          - 그런 다음 `application:didFinishLaunchingWithOptions:`메서드에서 FirebaseApp객체를 초기화한다.
+            ```
+            // Use Firebase library to configure APIs
+            FirebaseApp.configure()
+            ```
         - 인증 상테 수신 대기
+          - 각각의 앱 뷰에서 앱에 로그인한 사용자에 대한 정보를 얻기 위해 FIRAuth 객체와 리스너를 연결한다. 이 리스너는 사용자의 로그인 상태가 변경될 때마다 호출된다.
+          - 뷰 컨트롤러의 viewWillAppear 메서드에서 리스너를 연결한다.
+            ```
+            handle = Auth.auth().addStateDidChangeListener { auth, user in
+              // ...
+            }
+            ```
+          - 뷰 컨트롤러의 viewWillDisappear 메서드에서 리스너를 분리한다.
+            `Auth.auth().removeStateDidChangeListener(handle!)`
         - 신규 사용자 가입
+          - 신규 사용자가 자신의 이메일 주소와 비밀번호를 사용해 앱에 가입할 수 있는 양식을 만든다. 사용자가 양식을 작성하면 사용자가 입력한 이메일 주소와 비밀번호의 유효성을
+          검사한 후 createUser 메서드에 전달한다.
+            ```
+            Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+              // ...
+            }
+            ```
         - 기존 사용자 로그인
+          - 기존 사용자가 자신의 이메일 주소와 비밀번호를 사용해 로그인할 수 있는 양식을 만든다. 사용자가 양식을 작성하면 signIn 메서드를 호출한다.
+            ```
+            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+              guard let strongSelf = self else { return }
+              // ...
+            }
+            ``` 
         - 사용자 정보 가져오기
+          - 사용자가 로그인되면 사용자에 대한 정보를 가져올 수 있다. 예를 들어 인증 상태 리스너에서 다음을 수행한다.
+            ```
+            if let user = user {
+              // The user's ID, unique to the Firebase project.
+              // Do NOT use this value to authenticate with your backend server,
+              // if you have one. Use getTokenWithCompletion:completion: instead.
+              let uid = user.uid
+              let email = user.email
+              let photoURL = user.photoURL
+              var multiFactorString = "MultiFactor: "
+              for info in user.multiFactor.enrolledFactors {
+                multiFactorString += info.displayName ?? "[DisplayName]"
+                multiFactorString += " "
+              }
+              // ...
+            }
+            ```
+      - Manage Users
+        - 사용자 생성
+        - 현재 로그인한 사용자 가져오기
+        - 사용자 프로필 가져오기
+        - 제공업체의 사용자 프로필 정보 가져오기
+        - 사용자 프로필 업데이트하기
+        - 사용자 이메일 주소 설정하기
+        - 사용자에게 인증 메일 보내기
+        - 사용자 비밀번호 설정하기
+        - 비밀번호 재설정 이메일 보내기
+        - 사용자 삭제
+        - 사용자 재인증하기
+        - 사용자 계정 가져오기
     - Android
     - Web
       - Sign in with a pre-built UI
@@ -2890,6 +2950,275 @@
           - 이메일 링크로 로그인 완료
       - Google
       - Facebook Login
+  - Cloud Firestore
+    - Introduction
+    - Get started
+      - Cloud Firestore 데이터베이스 만들기
+        1. Firebase 프로젝트를 아직 만들지 않았다면 Firebase Console에서 프로젝트 추가를 클릭한 후 화면의 안내에 따라 Firebase 프로젝트를 만들거나 기존
+        GCP 프로젝트에 Firebase 서비스를 추가한다.
+        2. 앱의 Cloud Firestore 섹션으로 이동한다. Firebase Console 기존 Firebase 프로젝트를 선택하라는 메시지가 표시된다. 데이터베이스 만들기 워크플로를 따른다.
+        3. Cloud Firestore Security Rules의 시작 모드 선택:
+          - 테스트 모드
+            - 모바일 및 웹 클라이언트 라이브러리를 시작할 때 유용하지만 모든 사용자가 데이터를 읽고 덮어쓸 수 있다. 테스트 완료 후 데이터 보안 섹션을 검토해야 한다.
+            - 웹, Apple 플랫폼 또는 Android SDK를 시작하려면 테스트 모드를 선택할 것.
+          - 잠금 모드
+            - 모바일 및 웹 클라이언트의 모든 읽기 및 쓰기를 거부한다. 인증된 애플리케이션 서버 (C#, Go, 자바, Node.js, PHP, Python, Ruby)에서는 사용자의 데이터베이스에 계속 액세스할 수 있다.
+            - C#, Go, 자바, Node.js, PHP, Python 또는 Ruby 서버 클라이언트 라이브러리를 시작하려면 잠금 모드를 선택할 것
+        4. 데이터베이스의 위치를 선택한다.
+          - 이 위치 설정이 프로젝트의 기본 Google Cloud Platform(GCP) 리소스 위치이다. 이 위치는 프로젝트의 GCP 서비스에 사용된다. 위치 설정이 필요한 캠페인,
+          특히 위치 설정이 필요한 캠페인, 특히 기본 Cloud Storage 버킷 및 App Engine 앱 (즉, 필수)이다.
+          - 위치를 선택할 수 없다면 프로젝트에 이미 기본 GCP 리소스 위치가 있는 것이다. 이 위치는 프로젝트 생성 과정이나 위치 설정이 필요한 다른 서비스를 설정할 떄 지정한 것이다.
+        5. 완료를 클릭한다.
+      - 개발 환경 설정
+        - Web modular API
+          ```
+          1. 안내에 따라 Firebase를 웹 앱에 추가한다.
+          2. Cloud Firestore SDK는 npm 패키지로 제공된다.
+            npm install firebase@10.13.1 --save
+             드림 Firebase와 Cloud Firestore를 모두 가져와야 한다.
+            import { initializeApp } from "firebase/app";
+            import { getFirestore } from "firebase/firestore";
+          ```
+        - iOS+
+          - 안내에 따라 Firebase를 Apple 앱에 추가한다.
+          - Swift Package Manager를 사용해 Firebase 종속 항목을 설치하고 관리할 것
+            1. 앱 프로젝트를 연 상태로 Xcode에서 File(파일) > Swift Packages(Swift 패키지) > Add Package Dependency(패키지 종속 항목 추가)로 이동한다.
+            2. 메시지가 표시되면 Firebase Apple 플랫폼 SDK 저장소를 추가한다.
+              `https://github.com/firebase/firebase-ios-sdk`
+               드림 <ph type="x-smartling-placeholder">
+            3. Firestore 라이브러리를 선택한다.
+            4. 완료되면 Xcode가 백그라운드에서 자동으로 종속 항목을 확인하고 다운로드하기 시작한다.
+        - Android
+          ```
+          1. 안내에 따라 Firebase를 Android 앱에 추가한다.
+          2. Firebase Android BoM Android용 Cloud Firestore 라이브러리의 종속 항목을 모듈 (앱 수준) Gradle 파일 (일반적으로 app/build.gradle.kts 또는
+          app/build.gradle)을 입력한다.
+            dependencies {
+              // Import the BoM for the Firebase platform
+              implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+
+              // Declare the dependency for the Cloud Firestore library
+              // When using the BoM, you don't specify versions in Firebase library dependencies
+              implementation("com.google.firebase:firebase-firestore")
+            }
+          ```
+      - (선택사항) Firebase Local Emulator Suite로 프로토타입 제작 및 테스트
+      - Cloud Firestore 초기화
+        - Web
+          ```
+          import { initializeApp } from "firebase/app";
+          import { getFirestore } from "firebase/firestore";
+
+          // TODO: Replace the following with your app's Firebase project configuration
+          // See: https://support.google.com/firebase/answer/7015592
+          const firebaseConfig = {
+            FIREBASE_CONFIGURATION
+          };
+
+          // Initialize Firebase
+          const app = initializeApp(firebaseConfig);
+
+          // Initialize Cloud Firestore and get a reference to the service
+          const db = getFirestore(app);
+          ```
+          - FIREBASE_CONFIGURATION을 웹 앱의 firebaseConfig로 바꾼다.
+        - Swift
+          ```
+          import FirebaseCore
+          import FirebaseFirestore
+
+          FirebaseApp.configure()
+          let db = Firestore.firestore()
+          ```
+        - Kotlin
+          ```
+          // Access a Cloud Firestore instance from your Activity
+
+          val db = Firebase.firestore
+          ```
+      - 데이터 추가
+        - Cloud Firestore는 컬렉션에 저장되는 문서에 데이터를 저장한다. Cloud Firestore가 암시적으로 컬렉션 및 문서 만들기 할 수 있다. 컬렉션이나 문서를 명시적으로
+        만들 필요가 없다.
+        - 다음 예시 코드를 사용해 새 컬렉션과 문서를 만든다.
+          - Web
+            ```
+            import { collection, addDoc } from "firebase/firestore";
+
+            try {
+              const docRef = await addDoc(collection(db, "users"), {
+                first: "Ada",
+                last: "Lovelace",
+                born: 1815
+              });
+              console.log("Document written with ID: ", docRef.id);
+            } catch (e) {
+              console.error("Error adding document: ", e);
+            }
+            ```
+          - Swift
+            ```
+            // Add a new document with a generated ID
+            do {
+              let ref = try awaid db.collection("users").addDocument(data: [
+                "first": "Ada",
+                "last": "Lovelace",
+                "born": 1815
+              ])
+              print("Document added with ID: \(ref.documentID)")
+            } catch {
+              print("Error adding document: \(error)")
+            }
+            ```
+          - Kotlin
+            ```
+            // Create a new user with a first and last name
+            val user = hashMapOf(
+              "first" to "Ada",
+              "last" to "Lovelace",
+              "born" to 1815
+            )
+
+            // Add a new document with a generated ID
+            db.collection("users")
+              .add(user)
+              .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+              }
+              .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding documnet", e)
+              }
+            ```   
+        - 이제 users 컬렉션에 다른 문서를 추가한다. 첫 번째 문서에는 나타나지 않는 키-값 쌍(중간 이름)이 문서에 포함된다는 점에 유의하라. 컬렉션의 문서에는 다른 정보
+        집합이 포함될 수 있다.
+          - Web
+            ```
+            // Add a second document with a generated ID.
+            import { addDoc, collection } from "firebase/firestore";
+
+            try {
+              const docRef = await addDoc(collection(db, "users"), {
+                first: "Alan",
+                middle: "Mathison",
+                last: "Turing",
+                born: 1912
+              });
+              console.log("Document written with ID: ", docRef.id);
+            } catch (e) {
+              console.error("Error adding document: ", e)
+            }
+            ```
+          - Swift
+            ```
+            // Add a second document with a generate ID.
+            do {
+              let ref = try await db.collection("users").addDocument(data: [
+                "first": "Alan",
+                "middle": "Mathison",
+                "last": "Turing",
+                "born": 1912
+              ])
+              print("Document added with ID: \(ref.documentID)")
+            } catch {
+              print("Error adding document: \(error)")
+            }
+            ```
+          - Kotlin
+            ```
+            // Create a new user with a first, middle, and last name
+            val user = hashMapOf(
+                "first" to "Alan",
+                "middle" to "Mathison",
+                "last" to "Turing",
+                "born" to 1912,
+            )
+
+            // Add a new document with a generated ID
+            db.collection("users")
+                .add(user)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+            ```
+      - 데이터 읽기
+        - 데이터 사용 뷰어 Firebase Console에서 Cloud Firestore에 데이터를 추가했는지 빠르게 확인할 수 있다.
+        - 'get'메서드를 사용해 전체 컬렉션을 가져올 수도 있다.
+        - Web
+          ```
+          import { collection, getDocs } from "firebase/firestore"
+
+          const querySnapshot = await getDocs(collection(db, "users"));
+          querySnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data()}`);
+          });
+          ```
+        - Swift
+          ```
+          do {
+            let snapshot = try await db.collection("users").getDocuments()
+            for document in snapshot.documents {
+              print("\(document.documentID) => \(documet.data())")
+            }
+          } catch {
+            print("Error getting documents: \(error)")
+          }
+          ```
+        - Kotlin
+          ```
+          db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+              for (document in result) {
+                Log.d(TAG, "${document.id} => ${document.data}")
+              }
+            }
+            .addOnFailureListener { exception ->
+              Log.w(TAG, "Error getting document.", exception)
+            }
+          ```
+      - 데이터 보안
+        - 웹, Android 또는 Apple 플랫폼 SDK를 사용하는 경우 Firebase 인증 밑 Cloud Firestore Security Rules를 사용해 데이터를 안전하게 보호하세요
+        - 다음은 시작하는 데 사용할 수 있는 기본 규칙 세트이다. Console의 규칙 탭에서 보안 규칙을 수정할 수 있다.
+          - 인증 필요
+            ```
+            // Allow read/write access to a document keyed by the user's UID
+            service cloud.firestore {
+              match /databases/{database}/documments {
+                match /users/{uid} {
+                  allow read, writeL if request.auth != null && request.auth.uid == uid;
+                }
+              }
+            }
+            ```
+    - Understand Cloud Firestore
+    - Manage databases
+    - Add and manage data
+    - Read data
+  - Storage
+    - Introduction
+    - iOS+
+    - Android
+    - Web
+      - Get started
+        - 기본요건
+          - 아직 진행하지 않았다면 Firebase JS SDK를 설치하고 Firebase를 초기화한다.
+        - 기본 Cloud Storage 버킷 만들기
+          1. Firebase 콘솔의 탐색창에서 Storage를 선택한다. 시작하기를 클릭한다.
+          2. 보안을 사용하여 Cloud Storage 데이터를 보호하는 방법에 관한 메시지 검토 있다. 개발 중에는 공개 액세스 규칙 설정
+          3. 기본 위치를 선택한다. Cloud Storage 버킷
+            - 이 위치 설정이 
+        - 공개 액세스 설정
+        - 앱에 버킷 URL 추가
+        - 고급 설정
+      - Create a Reference
+      - Upload Files
+      - Download Files
+      - Use File Metadata
+      - Delete Files
+      - List Files
+      - Handle Errors
 
 #### Cloud
 ##### GitHub Pages

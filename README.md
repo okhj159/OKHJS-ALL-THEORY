@@ -1,14 +1,10 @@
 # TECH INFO
 
 ## 목차
-1. [CS](#CS)
-2. [FRONT](#FRONT)
-3. [BACK](#BACK)
-4. [DEVOPS](#DEVOPS)
-5. [Architecture](#Architecture)
-
-## CS
-- [CS](cs/README.md)<br>
+1. [FRONT](#FRONT)
+2. [BACK](#BACK)
+3. [DEVOPS](#DEVOPS)
+4. [CS](#CS)
 
 ## FRONT
 - [FRONT](front/README.md)<br>
@@ -19,5 +15,5 @@
 ## DEVOPS
 - [DEVOPS](devops/README.md)<br>
 
-## Architecture
-- [Architecture](architecture/README.md)<br>
+## CS
+- [CS](cs/README.md)<br>

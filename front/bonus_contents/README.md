@@ -1249,16 +1249,25 @@
   - Platform
     - Get Started
       - Step 1: Projects & Deployments
+        - Option 1: Use a Template
+        - Option 2: Import an Existing Project
       - Step 2: Add a Domain
+        - Option 1: Buy a domain
+        - Option 2: Transfer an existing domain
       - Step 3: Collaborate
     - Frameworks
-    - Projects
+      - Next.js
+      - Create React App
+      - Vite
+    - Projects    
       - Project Dashboard
       - Monorepos
+        - Turborepo
       - Environment Variables
       - vercel.json
     - Builds
     - Deployments
+    - Domains
   - Infrastructure
   - Workflow
   - Storage

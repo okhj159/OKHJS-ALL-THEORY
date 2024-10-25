@@ -4,6 +4,7 @@
 1. [개요](#개요)
 2. [React](#React)
 3. [React Library](#React-Library)
+4. [Create React App](#Create-React-App)
 
 ## 개요
 - 
@@ -705,3 +706,138 @@
 #### Zustand
 
 <hr />
+
+## Create React App
+- Getting Started
+  - Getting Started
+    - Create React App는 공식적으로 지원되는 단일 페이지 React 애플리케이션을 만드는 방법이다. 구성이 필요 없는 최신 빌드 설정을 제공한다.
+  - Folder Structure
+    - 생성 후 프로젝트는 다음과 같이 보여야 한다.
+      ```
+      my-app/
+        README.md
+        node_modules/
+        package.json
+        public/
+          index.html
+          favicon.ico
+        src/
+          App.css
+          App.js
+          App.test.js
+          index.css
+          index.js
+          logo.svg
+      ```
+    - 프로젝트를 빌드하려면 다음 파일이 정확한 파일 이름으로 존재해야 한다.
+      - public/index.html 페이지 템플릿이다.
+      - src/index.js javascript의 진입점이다.
+    - 다른 파일은 삭제하거나 이름을 바꿀 수 있다.
+      - .src안에 하위 디렉토리를 만들 수 있다. 더 빠른 재구축을 위해, webpack은 .src안에 있는 파일만 처리한다. js와 css 파일을 .src안에 넣어야 한다. 그렇지 않으면
+        webpack이 볼 수 없다.
+      - .public 내부의 파일만 public/index.js에서 사용할 수 있다.
+  - Available Scripts
+  - Supported Browser and Features
+  - Updating to New Releases
+- Development
+  - Editor Setup
+  - Developing Components in Isolation
+  - Analyzing Bundle Size
+  - HTTPS in Development
+- Styles and Assets
+  - Adding Stylesheets
+    - 이 프로젝트 설정은 모든 assets를 처리하기 위해 webpack을 사용한다. webpack은 javascript를 넘어서는 개념을 확장하는 사용자 지정 import 방식을 제공한다.
+      JavaScript 파일이 CSS 파일에 의존한다는 것을 표현하려면 JavaScript 파일에서 CSS를 가져와야 한다.
+      - Button.css
+        ```
+        .Button {
+          padding: 20px;
+        }
+        ```
+      - Button,js
+        ```
+        import React, { Component } from 'react';
+        import './Button.css'; // Tell webpack that Button.js uses these styles
+
+        class Button extends Component {
+          render() {
+            // You can use them as regular CSS styles
+            return <div className="Button" />;
+          }
+        }
+        ```
+  - Adding CSS Modules
+    - 이 프로젝트는 `[name].module.css`파일 명명 규칙을 사용하여 일반 스타일시트와 함께 CSS모듈을 지원한다. CSS모듈은 `[filename]\_[classname]\_\_[hash]`형식의
+      고유햔 클래스 이름을 자동으로 생성하여 CSS의 범위를 허용한다.
+    - CSS 모듈을 사용하면 이름 충돌에 대해 걱정하지 않고도 다른 파일에서 동일한 CSS 클래스 이름을 사용할 수 있다.
+    - Button.module.css
+      ```
+      .error {
+        background-color: red;
+      }
+      ```
+    - another-stylesheet.css
+      ```
+      .error {
+        color: red;
+      }
+      ```
+    - Button.js
+      ```
+      import React, { Component } from 'react';
+      import styles from './Button.module.css'; // Import css modules stylesheet as styles
+      import './another-stylesheet.css'; // Import regular stylesheet
+
+      class Button extends Component {
+        render() {
+          // reference as a js object
+          return <button className={styles.error}>Error Button</button>;
+        }
+      }
+      ```
+    - 결과
+      - 다른 클래스 .error 이름과 충돌 없음
+        ```
+        <!-- This button has red background but not red text -->
+        <button class="Button_error_ax7yz">Error Button</button>
+        ```
+  - Adding Sass Stylesheets
+    - 일반적으로 다른 컴포넌트에서 같은 css를 사용하지 않는 것을 추천한다. 예를들어 `<AcceptButton>`, `<RejectButton>` 컴포넌트에서 .Button CSS class를 사용하는 것 보다는 `<AcceptButton>`, `<RejectButton>` 모두가 렌더링할 수 있는 .Button 스타일의 `<Button>` 컴포넌트를 만드는 것을 추천한다.
+    - 이 규칙을 따르면 믹스인과 중첩과 같은 기능이 구성 요소 구성으로 대체되므로 CSS 전처리가 덜 유용해지는 경우가 많다. 그러나 가치 있다고 생각되면 CSS 전처리기를 통합할 수 있다.
+    - Sass를 사용하려면 먼저 다음을 설치하라.
+      ```
+      $ npm install sass
+      # or
+      $ yarn add sass
+      ```
+    - 이제 src/App.css를 src/App.scss로 바꾸거나 src/App.js에 src/App.scss를 import할 수 있다. 
+  - Adding CSS Reset
+    - 이 프로젝트 setup은 CSS Reset을 더하기 위하여 PostCSS Normalize를 사용한다.
+    - 이를 사용하기 위해서는 CSS 파일 어디든지 `@import-normalize;`를 더하면 된다. 만약 한번만 include하고 싶으면, index.css나 App.css가 좋은 위치이다.
+  - Post-Processing CSS
+    - 이 프로젝트 셋업은 CSS를 최소화하고 vendor prefixes를 Autoprefixer를 통해서 자동적으로 더할 수 있다.
+  - Adding Images, Fonts, and Files
+    - webpack에 의해 images와 fonts 같은 static assets는 CSS와 유사하게 사용할 수 있다.
+    - 
+  - Loading .graphql Files
+  - Using the Public Folder
+  - Code Splitting
+- Building your App
+  - Installing a Dependency
+  - Importing a Component
+  - Using Global Variables
+  - Adding Bootstrap
+  - Adding Flow
+  - Adding TypeScript
+  - Adding Relay
+  - Adding a Router
+  - Environment Variables
+  - Making a Progressive Web App
+  - Measuring Performance
+  - Creating a Production Build
+- Testing
+  - Running Tests
+  - Debugging Tests
+- Back-End Integration
+- Deployment
+- Advanced Usage

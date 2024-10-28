@@ -825,6 +825,21 @@
 - Building your App
   - Installing a Dependency
   - Importing a Component
+    - Absolute Imports
+      - 절대경로를 사용하여 module을 import할 수 있다. jsconfig.json이나 tsconfig.json 파일을 구성하면 된다. 
+      - 다음 예와 같이 config 파일을 작성하자.
+        ```
+          {
+            "compilerOptions": {
+              "baseUrl": "src"
+            },
+            "include": ["src"]
+          }
+        ```
+      - 그러면 src/components/Button.js에 위치한 module을 다음과 같이 import 할 수 있다.
+        ```
+          import Button from 'components/Button';
+        ```
   - Using Global Variables
   - Adding Bootstrap
   - Adding Flow

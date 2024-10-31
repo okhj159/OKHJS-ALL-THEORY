@@ -35,7 +35,18 @@
             Prettier를 최대한 활용할 수 있다. 코딩하는 동안 줄이 너무 길어져서 화면에 맞지 않을 때, 키를 누르면 마법처럼 여러 줄로 줄바꿈되는 것을 볼 수 있다.
             또는 코드를 붙여넣고 들여쓰기가 엉망이 되면 Prettier가 편집기를 벗어나지 않고도 수정해 준다.
         - ESLint
+            - ESLint를 사용하는 경우 eslint-config-prettier를 설치하여 ESLint와 Prettier가 서로 잘 어울리도록 한다. 불필요하거나 Prettier와 충돌할 수 있는
+            모든 ESLint 규칙을 끈다. 
+        - Git hooks
     - Ignoring Code
+        - Ignoring Files: .prettierignore
+        - JavaScript
+        - JSX
+        - HTML
+        - CSS
+        - Markdown
+        - YAML
+        - Command Line File Patterns
 - Configuring Prettier
 - Editors
 - Misc

@@ -10,9 +10,6 @@
 
 ## Linters and Formatters
 
-### ESLint
-- 
-
 ### Prettier
 - About
 - Usage
@@ -47,13 +44,43 @@
         - Markdown
         - YAML
         - Command Line File Patterns
+    - Integrating with Linters
+        - Linter는 일반적으로 코드 품질 규칙뿐만 아니라 스타일 규칙도 포함한다. Prettier를 사용할 때 대부분의 스타일 규칙은 불필요하지만 더 나쁜 점은
+        Prettier와 충동할 수 있다는 것이다. Prettier는 코드 포매팅 문제에 사용하고 Linter는 코드 품질 문제에 사용한다.
+        - 다행히 Prettier와 충돌하거나 불필요한 규칙을 해제하는 것은 다음과 같은 사전 제작된 구성을 사용하여 쉽게 가능하다.
+            - eslint-config-prettier
+    - Pre-commit Hook
+        - Option 1. lint-staged
+        - Option 2. Husky.Net
+        - Option 3. git-format-staged
+        - Option 4. Shell script
+    - CLI
+    - API
+    - Browser
 - Configuring Prettier
+    - Options
+    - Configuration File
+    - Sharing configurations
 - Editors
 - Misc
+
+### ESLint
+- USE ESLINT IN YOUR PROJECT
+    - Getting Started
+    - Core Concepts
+        - Glossary
+    - Configure ESLint
+        - Configuration Files
+        - Configure Language Options
+- EXTEND ESLINT
+- INTEGRATE ESLINT
+- CONTRIBUTE TO ESLINT
+- MAINTAIN ESLINT
 
 ## Module Bundlers
 
 ### vite
+-
 
 ### Webpack
 -

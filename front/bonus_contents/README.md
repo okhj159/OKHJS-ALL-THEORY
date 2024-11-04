@@ -1258,19 +1258,40 @@
     - Frameworks
       - Next.js
       - Create React App
+        - Get Started with CRA on Vercel
+        - Static file caching
+          - vercel에서 정적 파일은 첫 번째 요청 후 글로벌 Edge Network의 모든 지역에 복제되고 배포된다. 이를 통해 정적 파일이 방문자에게 가장 가까운
+          위치에서 제공되어 성능이 향상되고 지연 시간이 줄어든다.
+          - 정적 파일은 최대 31일 동안 캐시된다. 파일이 변경되지 않은 경우 해시가 정적 파일을 캐시하므로 배포 전체에 걸쳐 지속될 수 있다. 그러나
+          재배포하면 캐시가 효과적으로 무효화되므로 항상 최신 버전을 제공한다.
+          - 요약하자면 Vercel에서 CRA와 함께 정적 파일을 사용하는 방법은 다음과 같다.
+            - 최상의 성능을 위해 자산을 자동으로 최적화하고 캐시한다.
+            - public 폴더를 통해 파일에 쉽게 접근할 수 있다.
+            - 다운타임 없는 롤아웃 지원
+            - 구매 또는 설정에 추가 서비스가 필요하지 않다.
+        - Preview Deployments
+        - Edge Functions
+        - Web Analytics
+        - Speed insights
+        - Observability
       - Vite
     - Projects    
-      - Project Dashboard
+      - Managing Projects
+        - Create a project
+        - pausing a project
+        - Deleting a project
+      - Transferring a Project
       - Monorepos
         - Turborepo
       - Environment Variables
-      - vercel.json
+      - Project Dashboard
     - Builds
     - Deployments
     - Domains
   - Infrastructure
   - Workflow
   - Storage
+- Guides
 
 ### netlify
 

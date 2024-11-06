@@ -673,13 +673,40 @@
 - Getting Started
 - Upgrading
 - Routers
+  - Picking a Router
+  - createBrowserRouter
+  - createHashRouter
+  - createMemoryRouter
+  - createStaticHandler
+  - createStaticRouter
+  - RouterProvider
+  - StaticRouterProvider
 - Router Components
+  - BrowserRouter
+  - HashRouter
+  - NativeRouter
+  - Router
+  - StaticRouter
 - Route
+  - Route
+  - action
+  - errorElement
+  - hydrateFallbackElement
+  - lazy
+  - loader
+  - shouldRevaildate
 - Components
+  - Await
+  - Form
   - Link
+  - NavLink
+  - Navigate
   - Outlet
+  - Route
+  - Routes
   - ScrollRestoration
 - Hooks
+  - useNavigate
 
 ### Store
 

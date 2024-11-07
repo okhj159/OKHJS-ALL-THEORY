@@ -71,6 +71,22 @@
                         - 검색 매개변수를 포함하는 객체
                           <img src="next/search_params.png">
         - next.config.js Options
+            - appDir
+            - assetPrefix
+            - basePath
+                - Next.js 어플리케이션 도메인의 sub-path를 배포하기 위해 basePath를 사용할 수 있다.
+                - Links
+                    - next/link와 next/router를 사용하여 linking을 할 때 basePath는 자동으로 적용된다.
+                - Images
+                    - next/image 컴포넌트를 사용할 때, src 앞에 basePath가 더해진다.
+            - crossOrigin
+            - distDir
+                - .next 디렉토리 대신 사용할 특정한 디렉토리가 필요할 때 값을 넣으면 된다.
+                - distDir은 프로젝트 디렉토리를 벗어날 수 없다. 예를 들어 `../build`와 처럼은 안 된다.
+            - env
+                - JavaScript bundle에 환경 변수를 더하기 위해서 사용할 수 있다.
+            - eslint
+            - exportPathMap
             - rewrites
                 - Rewrites는 request path를 다른 destination path로 매핑시킬 수 있게 한다.
         - Edge Runtime

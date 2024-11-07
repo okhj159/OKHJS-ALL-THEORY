@@ -87,6 +87,7 @@
                 - JavaScript bundle에 환경 변수를 더하기 위해서 사용할 수 있다.
             - eslint
             - exportPathMap
+            - headers
             - rewrites
                 - Rewrites는 request path를 다른 destination path로 매핑시킬 수 있게 한다.
         - Edge Runtime
@@ -105,5 +106,6 @@
         - 클라이언트에서의 내비게이션은 브라우저 화면을 새로 고칠 필요 없이 다른 페이지로의 이등이 가능하다.
         - 웹 앱에서는 최소로 필요한 html 마크업만 렌더링한다.
         - 전체 렌더링 과정이 브라우저에서 일어나기 때문에 서버 부하가 감소한다. AWS Lamda와 Firebase와 같은 서버리스 환경에서 웹 앱을 제공할 수도 있다.
+        
 
 <hr />
